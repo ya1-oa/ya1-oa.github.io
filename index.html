@@ -3,228 +3,645 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Three.js Site</title>
+    <title>YA1 Creative Studio – Portfolio</title>
     <style>
-        /* Reset default styles */
+        :root {
+            --background: #050609;
+            --foreground: #ffffff;
+            --muted: rgba(255, 255, 255, 0.65);
+            --accent: #60a5fa;
+            --accent-soft: rgba(96, 165, 250, 0.1);
+            --surface: rgba(12, 14, 20, 0.55);
+            --surface-strong: rgba(12, 14, 20, 0.8);
+            --border: rgba(255, 255, 255, 0.08);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
-        /* Canvas styling */
+        body {
+            background: var(--background);
+            color: var(--foreground);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
         #threejs-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
+            inset: 0;
+            z-index: -2;
+        }
+
+        .overlay-gradient {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at top, rgba(96, 165, 250, 0.22), transparent 55%),
+                        radial-gradient(circle at bottom, rgba(236, 72, 153, 0.18), transparent 50%);
             z-index: -1;
         }
 
-        /* Main content container */
         .content {
             position: relative;
-            padding: 2rem;
-            color: #ffffff;
+            padding: 2.5rem clamp(1.5rem, 4vw, 4rem) 4rem;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            gap: 6rem;
         }
 
-        /* Navigation styling */
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 0;
-            margin-bottom: 4rem;
+            gap: 2rem;
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            letter-spacing: -0.5px;
+            letter-spacing: 0.35rem;
+            text-transform: uppercase;
         }
 
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: clamp(1.5rem, 4vw, 3rem);
         }
 
         .nav-links a {
-            color: #ffffff;
+            color: var(--muted);
             text-decoration: none;
-            font-size: 1rem;
-            opacity: 0.8;
-            transition: opacity 0.3s ease;
+            font-size: 0.95rem;
+            letter-spacing: 0.05rem;
+            text-transform: uppercase;
+            transition: color 0.3s ease, opacity 0.3s ease;
         }
 
         .nav-links a:hover {
-            opacity: 1;
+            color: var(--foreground);
         }
 
-        /* Hero section styling */
         .hero {
-            max-width: 800px;
-            margin: auto;
-            text-align: center;
-            padding: 4rem 0;
+            margin-top: 4rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 3rem;
+            align-items: center;
         }
 
-        .hero h1 {
-            font-size: 4rem;
-            font-weight: 800;
-            line-height: 1.1;
+        .hero-copy h1 {
+            font-size: clamp(2.8rem, 6vw, 4.8rem);
+            line-height: 1.05;
+            letter-spacing: -0.04em;
             margin-bottom: 1.5rem;
-            letter-spacing: -1px;
         }
 
-        .hero p {
-            font-size: 1.25rem;
-            opacity: 0.8;
-            margin-bottom: 2rem;
-            line-height: 1.6;
+        .hero-copy p {
+            font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+            color: var(--muted);
+            line-height: 1.65;
+            margin-bottom: 2.5rem;
         }
 
-        /* Button styling */
-        .cta-button {
-            display: inline-block;
-            padding: 1rem 2rem;
-            background: #ffffff;
-            color: #000000;
-            text-decoration: none;
-            border-radius: 50px;
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .cta-button,
+        .ghost-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            padding: 0.85rem 1.8rem;
+            border-radius: 999px;
             font-weight: 600;
-            transition: transform 0.3s ease;
+            text-decoration: none;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+            letter-spacing: 0.02em;
+        }
+
+        .cta-button {
+            color: #000;
+            background: #fff;
+            box-shadow: 0 12px 30px -18px rgba(255, 255, 255, 0.8);
         }
 
         .cta-button:hover {
             transform: translateY(-2px);
+            box-shadow: 0 16px 40px -18px rgba(255, 255, 255, 0.75);
         }
 
-        /* Scroll indicator */
-        .scroll-indicator {
+        .ghost-button {
+            color: var(--foreground);
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .ghost-button:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .metric-card {
+            padding: 1.5rem;
+            border-radius: 1.25rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+        }
+
+        .metric-card span {
+            display: block;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+        }
+
+        .metric-card strong {
+            display: block;
+            font-size: 2rem;
+            margin-top: 0.65rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 2.5rem;
+            gap: 2rem;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            letter-spacing: -0.03em;
+        }
+
+        .section-header p {
+            color: var(--muted);
+            line-height: 1.6;
+            max-width: 520px;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            position: relative;
+            padding: 2.25rem;
+            border-radius: 1.75rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(8px);
+            transition: transform 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+            overflow: hidden;
+        }
+
+        .project-card::after {
+            content: "";
             position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0.6;
-            animation: bounce 2s infinite;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.18), transparent 55%);
+            opacity: 0;
+            transition: opacity 0.35s ease;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .project-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(96, 165, 250, 0.35);
         }
 
-        /* Loading screen */
+        .project-card:hover::after {
+            opacity: 1;
+        }
+
+        .project-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.9rem;
+            border-radius: 999px;
+            background: rgba(96, 165, 250, 0.16);
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-card h3 {
+            font-size: 1.45rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .project-card p {
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem 1rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .project-meta span {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .project-link {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        .project-link svg {
+            width: 1.2rem;
+            height: 1.2rem;
+            transition: transform 0.25s ease;
+        }
+
+        .project-card:hover .project-link svg {
+            transform: translateX(4px);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1.75rem;
+        }
+
+        .service-card {
+            padding: 2rem;
+            border-radius: 1.5rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.25rem;
+        }
+
+        .service-card ul {
+            list-style: none;
+            display: grid;
+            gap: 0.65rem;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .service-card ul li::before {
+            content: "•";
+            margin-right: 0.65rem;
+            color: rgba(96, 165, 250, 0.85);
+        }
+
+        .contact-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .contact-card {
+            padding: 2.5rem;
+            border-radius: 1.75rem;
+            background: var(--surface-strong);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            display: grid;
+            gap: 1.25rem;
+        }
+
+        .contact-card span {
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .contact-card a {
+            color: #fff;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+
+        footer {
+            padding-top: 3rem;
+            border-top: 1px solid var(--border);
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 900px) {
+            .content {
+                padding-top: 2rem;
+            }
+
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero {
+                margin-top: 2rem;
+            }
+
+            .metrics {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-screen" aria-hidden="true">Loading...</div>
+    <canvas id="threejs-canvas"></canvas>
+    <div class="overlay-gradient" aria-hidden="true"></div>
+
+    <div class="content">
+        <nav>
+            <div class="logo">YA1 CREATIVE</div>
+            <div class="nav-links">
+                <a href="#about">About</a>
+                <a href="#work">Work</a>
+                <a href="#services">Services</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </nav>
+
+        <section class="hero" id="about">
+            <div class="hero-copy">
+                <h1>Product-grade experiences for modern brands.</h1>
+                <p>I design and build immersive web applications that feel human, run fast, and solve real business problems. Explore a curated set of live CRM, ecommerce, and experiential projects tailored for Los Angeles teams.</p>
+                <div class="button-group">
+                    <a class="cta-button" href="#work">View Signature Projects</a>
+                    <a class="ghost-button" href="#contact">Schedule a Discovery Call</a>
+                </div>
+            </div>
+            <div class="metrics">
+                <div class="metric-card">
+                    <span>Industries Served</span>
+                    <strong>10+</strong>
+                </div>
+                <div class="metric-card">
+                    <span>Experience</span>
+                    <strong>8 yrs</strong>
+                </div>
+                <div class="metric-card">
+                    <span>Avg. Conversion Lift</span>
+                    <strong>32%</strong>
+                </div>
+            </div>
+        </section>
+
+        <section id="work">
+            <div class="section-header">
+                <h2>Signature project playbooks</h2>
+                <p>Each concept is production-ready, built with maintainable code, clean UX, and a focus on measurable business outcomes. Dive into the live demos to experience the flows in detail.</p>
+            </div>
+            <div class="projects-grid">
+                <article class="project-card">
+                    <div class="project-tag">CRM Platform</div>
+                    <h3>Latitude CRM – Unified Client Intelligence</h3>
+                    <p>End-to-end CRM designed for boutique agencies. Includes pipeline forecasting, sentiment-driven alerts, and automation hand-offs powered by custom AI copilots.</p>
+                    <div class="project-meta">
+                        <span>Product Strategy</span>
+                        <span>Next.js · Supabase · Tailwind</span>
+                    </div>
+                    <a class="project-link" href="projects/latitude-crm.html">Explore the experience
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14"></path>
+                            <path d="M13 6l6 6-6 6"></path>
+                        </svg>
+                    </a>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-tag">Ecommerce</div>
+                    <h3>Halo Haus – Immersive Lifestyle Retail</h3>
+                    <p>A conversion-first ecommerce flow with cinematic merchandising, guided bundling, and a polished checkout that syncs with Shopify Plus and Klaviyo marketing loops.</p>
+                    <div class="project-meta">
+                        <span>Experience Design</span>
+                        <span>Remix · Shopify Hydrogen · Sanity</span>
+                    </div>
+                    <a class="project-link" href="projects/halo-haus.html">View storefront concept
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14"></path>
+                            <path d="M13 6l6 6-6 6"></path>
+                        </svg>
+                    </a>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-tag">Interactive Showcase</div>
+                    <h3>PulseFrame – Animated Product Stories</h3>
+                    <p>Interactive 2D/3D storytelling engine for launch campaigns. Layered scroll choreography, WebGL particles, and collaborative storyboards for art directors.</p>
+                    <div class="project-meta">
+                        <span>Motion Systems</span>
+                        <span>Three.js · GSAP · Web Audio API</span>
+                    </div>
+                    <a class="project-link" href="projects/pulseframe.html">Launch interactive preview
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14"></path>
+                            <path d="M13 6l6 6-6 6"></path>
+                        </svg>
+                    </a>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-tag">Hospitality Growth</div>
+                    <h3>MenuLoop – QR-led Guest Engagement</h3>
+                    <p>QR-first ordering and loyalty for LA restaurants. Guests scan, browse animated menus, and earn perks while managers monitor real-time inventory and staff pacing.</p>
+                    <div class="project-meta">
+                        <span>Product Design</span>
+                        <span>Vue · Firebase · Stripe Terminal</span>
+                    </div>
+                    <a class="project-link" href="projects/menuloop.html">See restaurant system
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14"></path>
+                            <path d="M13 6l6 6-6 6"></path>
+                        </svg>
+                    </a>
+                </article>
+            </div>
+        </section>
+
+        <section id="services">
+            <div class="section-header">
+                <h2>From discovery to launch</h2>
+                <p>A structured process keeps every build grounded in business outcomes and measurable KPIs. I stay close to your team to ship fast and iterate even faster.</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Product &amp; UX Strategy</h3>
+                    <ul>
+                        <li>Customer journey mapping workshops</li>
+                        <li>Jobs-to-be-done research sprints</li>
+                        <li>Analytics &amp; instrumentation planning</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <h3>Full-stack Development</h3>
+                    <ul>
+                        <li>React, Vue, and native WebGL builds</li>
+                        <li>High-performance data visualizations</li>
+                        <li>API design, authentication, and ops</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <h3>Growth &amp; Optimization</h3>
+                    <ul>
+                        <li>Experiment frameworks &amp; CRO setup</li>
+                        <li>Lifecycle automation and CRM flows</li>
+                        <li>Ongoing A/B testing &amp; performance tuning</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact-section">
+            <div class="contact-card">
+                <span>Let’s build the next launch</span>
+                <h2>Tell me about the product you’re ready to ship.</h2>
+                <p style="color: var(--muted); line-height: 1.6;">I typically partner with marketing, product, and innovation teams across Los Angeles to deliver launches in 4–8 weeks. Share your goals and I’ll send over a tailored roadmap.</p>
+                <a href="mailto:hello@ya1creative.com">hello@ya1creative.com</a>
+                <a class="ghost-button" href="https://cal.com" target="_blank" rel="noopener">Book a 30-min call</a>
+            </div>
+            <div class="contact-card" style="background: rgba(96, 165, 250, 0.12); color: #0f172a;">
+                <span style="color: rgba(15, 23, 42, 0.6);">Capabilities Snapshot</span>
+                <ul style="list-style: none; color: rgba(15, 23, 42, 0.8); display: grid; gap: 0.75rem; font-size: 0.95rem;">
+                    <li>• WebGL &amp; motion design systems</li>
+                    <li>• CRM &amp; revenue intelligence dashboards</li>
+                    <li>• Shopify &amp; custom commerce integrations</li>
+                    <li>• Hospitality loyalty + QR ordering programs</li>
+                    <li>• Fractional product leadership engagements</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            © <span id="year"></span> YA1 Creative Studio · Based in Los Angeles · Available for select collaborations.
+        </footer>
+    </div>
+
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const yearSpan = document.getElementById('year');
+        if (yearSpan) {
+            yearSpan.textContent = new Date().getFullYear();
+        }
+
+        const loadingScreen = document.querySelector('.loading-screen');
+        window.addEventListener('load', () => {
+            if (loadingScreen) {
+                loadingScreen.classList.add('hidden');
+            }
+        });
+
+        // Initialize Three.js scene once script loads
+        window.addEventListener('load', () => {
+            if (typeof THREE === 'undefined') return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({
+                canvas: document.querySelector('#threejs-canvas'),
+                antialias: true,
+                alpha: true
+            });
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            const geometry = new THREE.IcosahedronGeometry(12, 1);
+            const material = new THREE.MeshStandardMaterial({
+                color: 0x4f46e5,
+                metalness: 0.4,
+                roughness: 0.2,
+                emissive: 0x0f172a,
+                emissiveIntensity: 0.6,
+                wireframe: false
+            });
+
+            const mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            const ambient = new THREE.AmbientLight(0xffffff, 0.35);
+            scene.add(ambient);
+
+            const pointLight = new THREE.PointLight(0x60a5fa, 1.2, 150);
+            pointLight.position.set(15, 20, 25);
+            scene.add(pointLight);
+
+            camera.position.z = 40;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                mesh.rotation.x += 0.0025;
+                mesh.rotation.y += 0.0035;
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        });
+    </script>
+    <style>
         .loading-screen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            transition: opacity 0.5s ease;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            background: rgba(5, 6, 9, 0.92);
+            color: var(--muted);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            z-index: 10;
+            transition: opacity 0.45s ease;
         }
 
         .loading-screen.hidden {
             opacity: 0;
             pointer-events: none;
         }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 3rem;
-            }
-
-            .nav-links {
-                display: none;
-            }
-        }
     </style>
-</head>
-<body>
-    <!-- Loading screen -->
-    <div class="loading-screen">
-        <span>Loading...</span>
-    </div>
-
-    <!-- Three.js canvas -->
-    <canvas id="threejs-canvas"></canvas>
-
-    <!-- Main content -->
-    <div class="content">
-        <nav>
-            <div class="logo">LOGO</div>
-            <div class="nav-links">
-                <a href="#about">About</a>
-                <a href="#work">Work</a>
-                <a href="#contact">Contact</a>
-            </div>
-        </nav>
-
-        <section class="hero">
-            <h1>Create Something Amazing</h1>
-            <p>Transform your ideas into reality with cutting-edge 3D web experiences.</p>
-            <a href="#" class="cta-button">Get Started</a>
-        </section>
-
-        <div class="scroll-indicator">↓</div>
-    </div>
-
-    <!-- Three.js and main script -->
-    <script async src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script>
-        // Wait for Three.js to load
-        window.addEventListener('load', () => {
-            // Initialize Three.js scene
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({
-                canvas: document.querySelector('#threejs-canvas'),
-                antialias: true
-            });
-
-            // Set renderer size
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-            // Add a simple mesh (customize this based on your needs)
-            const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
-            const material = new THREE.MeshNormalMaterial();
-            const torusKnot = new THREE.Mesh(geometry, material);
-            scene.add(torusKnot);
-
-            // Position camera
-            camera.position.z = 30;
-
-            // Animation loop
-            function animate() {
-                requestAnimationFrame(animate);
-                torusKnot.rotation.x += 0.01;
-                torusKnot.rotation.y += 0.01;
-                renderer.render(scene, camera);
-            }
-
-            // Handle window resize
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-
-            // Remove loading screen
-            document.querySelector('.loading-screen').classList.add('hidden');
-
-            // Start animation
-            animate();
-        });
-    </script>
 </body>
 </html>
