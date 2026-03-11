@@ -3,645 +3,509 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YA1 Creative Studio – Portfolio</title>
+    <title>YA1 Creative Studio — We Build. We Rank. We Convert.</title>
+    <meta name="description" content="YA1 Creative — Los Angeles product studio. Full-stack dev, app design, SEO, digital marketing, branding. Enterprise software to growth campaigns.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --background: #050609;
-            --foreground: #ffffff;
-            --muted: rgba(255, 255, 255, 0.65);
-            --accent: #60a5fa;
-            --accent-soft: rgba(96, 165, 250, 0.1);
-            --surface: rgba(12, 14, 20, 0.55);
-            --surface-strong: rgba(12, 14, 20, 0.8);
-            --border: rgba(255, 255, 255, 0.08);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: var(--background);
-            color: var(--foreground);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        #threejs-canvas {
-            position: fixed;
-            inset: 0;
-            z-index: -2;
-        }
-
-        .overlay-gradient {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at top, rgba(96, 165, 250, 0.22), transparent 55%),
-                        radial-gradient(circle at bottom, rgba(236, 72, 153, 0.18), transparent 50%);
-            z-index: -1;
-        }
-
-        .content {
-            position: relative;
-            padding: 2.5rem clamp(1.5rem, 4vw, 4rem) 4rem;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            gap: 6rem;
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        .logo {
-            font-size: 1.1rem;
-            font-weight: 700;
-            letter-spacing: 0.35rem;
-            text-transform: uppercase;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: clamp(1.5rem, 4vw, 3rem);
-        }
-
-        .nav-links a {
-            color: var(--muted);
-            text-decoration: none;
-            font-size: 0.95rem;
-            letter-spacing: 0.05rem;
-            text-transform: uppercase;
-            transition: color 0.3s ease, opacity 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: var(--foreground);
-        }
-
-        .hero {
-            margin-top: 4rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .hero-copy h1 {
-            font-size: clamp(2.8rem, 6vw, 4.8rem);
-            line-height: 1.05;
-            letter-spacing: -0.04em;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero-copy p {
-            font-size: clamp(1.1rem, 2.4vw, 1.35rem);
-            color: var(--muted);
-            line-height: 1.65;
-            margin-bottom: 2.5rem;
-        }
-
-        .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .cta-button,
-        .ghost-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.6rem;
-            padding: 0.85rem 1.8rem;
-            border-radius: 999px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
-            letter-spacing: 0.02em;
-        }
-
-        .cta-button {
-            color: #000;
-            background: #fff;
-            box-shadow: 0 12px 30px -18px rgba(255, 255, 255, 0.8);
-        }
-
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 16px 40px -18px rgba(255, 255, 255, 0.75);
-        }
-
-        .ghost-button {
-            color: var(--foreground);
-            border: 1px solid var(--border);
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        .ghost-button:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px);
-        }
-
-        .metrics {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .metric-card {
-            padding: 1.5rem;
-            border-radius: 1.25rem;
-            background: var(--surface);
-            border: 1px solid var(--border);
-        }
-
-        .metric-card span {
-            display: block;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--muted);
-        }
-
-        .metric-card strong {
-            display: block;
-            font-size: 2rem;
-            margin-top: 0.65rem;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 2.5rem;
-            gap: 2rem;
-        }
-
-        .section-header h2 {
-            font-size: clamp(2rem, 4vw, 3rem);
-            letter-spacing: -0.03em;
-        }
-
-        .section-header p {
-            color: var(--muted);
-            line-height: 1.6;
-            max-width: 520px;
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 2rem;
-        }
-
-        .project-card {
-            position: relative;
-            padding: 2.25rem;
-            border-radius: 1.75rem;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            backdrop-filter: blur(8px);
-            transition: transform 0.35s ease, border-color 0.35s ease, background 0.35s ease;
-            overflow: hidden;
-        }
-
-        .project-card::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(96, 165, 250, 0.18), transparent 55%);
-            opacity: 0;
-            transition: opacity 0.35s ease;
-        }
-
-        .project-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(96, 165, 250, 0.35);
-        }
-
-        .project-card:hover::after {
-            opacity: 1;
-        }
-
-        .project-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            padding: 0.35rem 0.9rem;
-            border-radius: 999px;
-            background: rgba(96, 165, 250, 0.16);
-            color: rgba(255, 255, 255, 0.85);
-            font-size: 0.75rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            margin-bottom: 1.5rem;
-        }
-
-        .project-card h3 {
-            font-size: 1.45rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .project-card p {
-            color: var(--muted);
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .project-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.6rem 1rem;
-            margin-bottom: 1.8rem;
-        }
-
-        .project-meta span {
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .project-link {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #fff;
-            text-decoration: none;
-            font-weight: 600;
-            z-index: 1;
-        }
-
-        .project-link svg {
-            width: 1.2rem;
-            height: 1.2rem;
-            transition: transform 0.25s ease;
-        }
-
-        .project-card:hover .project-link svg {
-            transform: translateX(4px);
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 1.75rem;
-        }
-
-        .service-card {
-            padding: 2rem;
-            border-radius: 1.5rem;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .service-card h3 {
-            font-size: 1.25rem;
-        }
-
-        .service-card ul {
-            list-style: none;
-            display: grid;
-            gap: 0.65rem;
-            color: var(--muted);
-            font-size: 0.95rem;
-        }
-
-        .service-card ul li::before {
-            content: "•";
-            margin-right: 0.65rem;
-            color: rgba(96, 165, 250, 0.85);
-        }
-
-        .contact-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .contact-card {
-            padding: 2.5rem;
-            border-radius: 1.75rem;
-            background: var(--surface-strong);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            display: grid;
-            gap: 1.25rem;
-        }
-
-        .contact-card span {
-            font-size: 0.9rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .contact-card a {
-            color: #fff;
-            font-size: 1.5rem;
-            text-decoration: none;
-        }
-
-        footer {
-            padding-top: 3rem;
-            border-top: 1px solid var(--border);
-            color: rgba(255, 255, 255, 0.55);
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 900px) {
-            .content {
-                padding-top: 2rem;
-            }
-
-            nav {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .nav-links {
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .hero {
-                margin-top: 2rem;
-            }
-
-            .metrics {
-                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            }
-        }
+        :root{--bg:#030507;--bg1:#060a0f;--bg2:#0b1118;--fg:#eef2f7;--muted:rgba(238,242,247,.52);--dim:rgba(238,242,247,.28);--green:#00e87a;--gd:rgba(0,232,122,.12);--gg:rgba(0,232,122,.3);--blue:#38bdf8;--bd:rgba(56,189,248,.1);--coral:#ff4d6d;--cd:rgba(255,77,109,.1);--gold:#ffd580;--gld:rgba(255,213,128,.1);--purple:#a78bfa;--pd:rgba(167,139,250,.1);--border:rgba(238,242,247,.07);--r:1.2rem;--display:'Syne',sans-serif;--mono:'JetBrains Mono',monospace;--body:'DM Sans',sans-serif;}
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+        body{background:var(--bg);color:var(--fg);font-family:var(--body);font-weight:400;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+        #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+        .noise{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.038;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:192px;}
+        .glow{position:fixed;top:-25vh;left:50%;transform:translateX(-50%);width:90vw;height:65vh;background:radial-gradient(ellipse at center,rgba(0,232,122,.05) 0%,transparent 68%);pointer-events:none;z-index:1;}
+        .site{position:relative;z-index:2;}
+        .wrap{width:100%;max-width:1300px;margin:0 auto;padding:0 clamp(1.25rem,5vw,4.5rem);}
+        section{padding:clamp(5rem,9vh,8rem) 0;}
+        .r{opacity:0;transform:translateY(26px);transition:opacity .65s cubic-bezier(.22,.68,0,1.1),transform .65s cubic-bezier(.22,.68,0,1.1);}
+        .r.in{opacity:1;transform:none;}
+        .d1{transition-delay:.08s;}.d2{transition-delay:.18s;}.d3{transition-delay:.28s;}.d4{transition-delay:.38s;}
+        /* NAV */
+        nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:1.1rem clamp(1.25rem,5vw,4.5rem);display:flex;justify-content:space-between;align-items:center;background:rgba(3,5,7,.72);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);transition:border-color .3s;}
+        nav.scrolled{border-bottom-color:rgba(0,232,122,.15);}
+        .logo{font-family:var(--display);font-weight:800;font-size:1.1rem;letter-spacing:.06em;color:var(--fg);text-decoration:none;position:relative;display:inline-block;}
+        .logo::before,.logo::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;pointer-events:none;}
+        .logo:hover::before{color:var(--green);clip-path:polygon(0 25%,100% 25%,100% 48%,0 48%);animation:ga .32s steps(2) forwards;}
+        .logo:hover::after{color:var(--coral);clip-path:polygon(0 58%,100% 58%,100% 80%,0 80%);animation:gb .32s steps(2) forwards;}
+        @keyframes ga{0%{transform:translateX(-3px) skewX(-3deg);}50%{transform:translateX(3px) skewX(3deg);}100%{transform:translateX(-1px)skewX(-1deg);}}
+        @keyframes gb{0%{transform:translateX(3px) skewX(3deg);}50%{transform:translateX(-3px) skewX(-3deg);}100%{transform:translateX(1px) skewX(1deg);}}
+        .nav-links{display:flex;align-items:center;gap:clamp(1rem,2.5vw,2rem);}
+        .nav-links a{font-family:var(--mono);font-size:.74rem;color:var(--muted);text-decoration:none;letter-spacing:.07em;transition:color .2s;}
+        .nav-links a:hover{color:var(--green);}
+        .nav-cta{padding:.5rem 1.2rem!important;border:1px solid var(--green)!important;border-radius:3px!important;color:var(--green)!important;transition:background .2s,color .2s!important;}
+        .nav-cta:hover{background:var(--green)!important;color:#000!important;}
+        /* HERO */
+        .hero{min-height:100vh;display:flex;align-items:center;padding-top:5rem;}
+        .hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(2.5rem,5vw,6rem);align-items:center;width:100%;}
+        .eyebrow{font-family:var(--mono);font-size:.75rem;color:var(--green);letter-spacing:.16em;text-transform:uppercase;margin-bottom:1.5rem;display:flex;align-items:center;gap:.85rem;}
+        .eyebrow::before{content:'';display:block;width:2rem;height:1px;background:var(--green);flex-shrink:0;}
+        h1{font-family:var(--display);font-weight:800;font-size:clamp(3.2rem,6.5vw,5.8rem);line-height:.98;letter-spacing:-.035em;margin-bottom:1.75rem;}
+        .c-green{color:var(--green);}.c-blue{color:var(--blue);}.c-coral{color:var(--coral);}.c-gold{color:var(--gold);}.c-purple{color:var(--purple);}
+        .hero-p{font-size:clamp(1rem,1.7vw,1.18rem);color:var(--muted);line-height:1.72;max-width:480px;margin-bottom:2.5rem;}
+        .hero-btns{display:flex;flex-wrap:wrap;gap:.9rem;}
+        /* BUTTONS */
+        .btn{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.82rem;font-weight:500;letter-spacing:.045em;padding:.85rem 1.85rem;border-radius:3px;text-decoration:none;transition:transform .22s,box-shadow .22s,background .2s,color .2s,border-color .2s;cursor:pointer;border:none;}
+        .btn-solid{background:var(--green);color:#000;}.btn-solid:hover{transform:translateY(-2px);box-shadow:0 10px 32px -8px var(--gg);}
+        .btn-outline{background:transparent;color:var(--fg);border:1px solid var(--border);}.btn-outline:hover{border-color:rgba(238,242,247,.3);background:rgba(255,255,255,.04);transform:translateY(-2px);}
+        .btn svg{width:1rem;height:1rem;flex-shrink:0;}
+        /* TERMINAL */
+        .terminal{background:var(--bg2);border:1px solid rgba(238,242,247,.09);border-radius:.85rem;overflow:hidden;font-family:var(--mono);font-size:.81rem;line-height:1;box-shadow:0 0 80px -24px rgba(0,0,0,.9),0 0 50px -30px rgba(0,232,122,.08);}
+        .t-bar{display:flex;align-items:center;gap:.45rem;padding:.8rem 1.2rem;background:rgba(255,255,255,.025);border-bottom:1px solid rgba(255,255,255,.06);}
+        .dot{width:.68rem;height:.68rem;border-radius:50%;}.dot-r{background:#ff5f57;}.dot-y{background:#febc2e;}.dot-g{background:#28c840;}
+        .t-title{font-size:.7rem;color:var(--dim);margin:0 auto;transform:translateX(-.75rem);}
+        .t-body{padding:1.4rem 1.5rem;line-height:1.95;}
+        .tp{color:var(--dim);}.tc{color:var(--green);}.tco{color:rgba(238,242,247,.28);}.tk{color:var(--blue);}.ts{color:#c3e88d;}.tn{color:var(--coral);}
+        .cursor{display:inline-block;width:.52rem;height:1.05em;background:var(--green);vertical-align:text-bottom;animation:blink 1s step-end infinite;}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+        /* STATS */
+        .stats-bar{padding:2.75rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+        .stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:1.5rem;text-align:center;}
+        .stat-num{font-family:var(--display);font-size:clamp(1.8rem,2.8vw,2.8rem);font-weight:800;line-height:1;display:block;letter-spacing:-.025em;}
+        .stat-num .sa{color:var(--green);}
+        .stat-lbl{font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:.5rem;display:block;}
+        /* SECTION HEADERS */
+        .sec-label{font-family:var(--mono);font-size:.73rem;color:var(--green);letter-spacing:.16em;text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:.7rem;}
+        .sec-label::before{content:'';display:block;width:1.5rem;height:1px;background:var(--green);flex-shrink:0;}
+        .sec-label.blue{color:var(--blue);}.sec-label.blue::before{background:var(--blue);}
+        .sec-label.gold{color:var(--gold);}.sec-label.gold::before{background:var(--gold);}
+        .sec-h2{font-family:var(--display);font-weight:800;font-size:clamp(2.2rem,4vw,3.4rem);letter-spacing:-.03em;line-height:1.03;}
+        .sec-p{color:var(--muted);font-size:1rem;line-height:1.72;max-width:540px;}
+        .sec-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:2rem;margin-bottom:3.25rem;}
+        /* SERVICES */
+        .dual-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+        .track{padding:2.5rem;border-radius:var(--r);border:1px solid var(--border);background:rgba(255,255,255,.014);position:relative;overflow:hidden;transition:border-color .3s,background .3s;}
+        .track::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;opacity:0;transition:opacity .3s;}
+        .track.build::before{background:linear-gradient(90deg,transparent,var(--green),transparent);}
+        .track.grow::before{background:linear-gradient(90deg,transparent,var(--blue),transparent);}
+        .track:hover{background:rgba(0,232,122,.018);border-color:rgba(0,232,122,.28);}.track:hover::before{opacity:1;}
+        .track.grow:hover{background:rgba(56,189,248,.018);border-color:rgba(56,189,248,.28);}
+        .t-chip{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;padding:.28rem .78rem;border-radius:2px;margin-bottom:1.75rem;display:inline-block;}
+        .t-chip.g{background:var(--gd);color:var(--green);}.t-chip.b{background:var(--bd);color:var(--blue);}
+        .track-glyph{font-size:2.2rem;display:block;margin-bottom:1.1rem;}
+        .track h3{font-family:var(--display);font-size:1.7rem;font-weight:800;letter-spacing:-.025em;margin-bottom:.65rem;}
+        .track>p{color:var(--muted);font-size:.93rem;line-height:1.72;margin-bottom:1.85rem;}
+        .svc-list{list-style:none;display:grid;gap:.6rem;}
+        .svc-list li{font-size:.91rem;color:rgba(238,242,247,.78);display:flex;align-items:flex-start;gap:.7rem;line-height:1.45;}
+        .svc-list li::before{content:'▸';font-size:.68rem;color:var(--green);margin-top:.18rem;flex-shrink:0;}
+        .track.grow .svc-list li::before{color:var(--blue);}
+        /* FEATURED */
+        .featured{padding:3rem;border-radius:1.5rem;background:rgba(255,255,255,.016);border:1px solid rgba(0,232,122,.18);position:relative;overflow:hidden;}
+        .featured::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),var(--blue),transparent);}
+        .feat-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:3rem;align-items:start;}
+        .feat-tag{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;padding:.3rem .85rem;background:var(--gd);color:var(--green);border-radius:2px;display:inline-block;margin-bottom:1.25rem;}
+        .feat h2{font-family:var(--display);font-weight:800;font-size:clamp(1.9rem,3.2vw,2.7rem);letter-spacing:-.03em;margin-bottom:.85rem;line-height:1.05;}
+        .feat p{color:var(--muted);line-height:1.72;font-size:.97rem;margin-bottom:1.75rem;}
+        .feat-stack{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1.85rem;}
+        .chip{font-family:var(--mono);font-size:.65rem;padding:.2rem .62rem;border:1px solid var(--border);border-radius:2px;color:var(--dim);}
+        .feat-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem;margin-bottom:1.6rem;}
+        .fm{padding:.9rem;background:rgba(0,232,122,.055);border:1px solid rgba(0,232,122,.12);border-radius:.85rem;text-align:center;}
+        .fm strong{display:block;font-family:var(--display);font-size:1.5rem;font-weight:800;color:var(--green);}
+        .fm span{font-family:var(--mono);font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;}
+        .feat-features{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;}
+        .ff{display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:rgba(238,242,247,.78);line-height:1.4;}
+        .ff::before{content:'▸';font-size:.62rem;color:var(--green);margin-top:.14rem;flex-shrink:0;}
+        .feat-btns{display:flex;gap:.85rem;flex-wrap:wrap;}
+        /* PROJECTS */
+        .proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+        .proj{position:relative;padding:2rem;border-radius:var(--r);background:rgba(255,255,255,.014);border:1px solid var(--border);overflow:hidden;transition:border-color .35s,transform .35s;display:flex;flex-direction:column;}
+        .proj::after{content:'';position:absolute;inset:0;background:linear-gradient(140deg,rgba(0,232,122,.05) 0%,transparent 50%);opacity:0;transition:opacity .35s;pointer-events:none;}
+        .proj:hover{transform:translateY(-5px);border-color:rgba(0,232,122,.22);}.proj:hover::after{opacity:1;}
+        .proj.blue:hover{border-color:rgba(56,189,248,.22);}.proj.blue::after{background:linear-gradient(140deg,rgba(56,189,248,.05) 0%,transparent 50%);}
+        .proj.coral:hover{border-color:rgba(255,77,109,.22);}.proj.coral::after{background:linear-gradient(140deg,rgba(255,77,109,.05) 0%,transparent 50%);}
+        .proj.gold:hover{border-color:rgba(255,213,128,.22);}.proj.gold::after{background:linear-gradient(140deg,rgba(255,213,128,.05) 0%,transparent 50%);}
+        .proj.purple:hover{border-color:rgba(167,139,250,.22);}.proj.purple::after{background:linear-gradient(140deg,rgba(167,139,250,.05) 0%,transparent 50%);}
+        .proj-tag{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;padding:.25rem .7rem;border-radius:2px;margin-bottom:1.1rem;display:inline-block;}
+        .pt-g{background:var(--gd);color:var(--green);}.pt-b{background:var(--bd);color:var(--blue);}.pt-c{background:var(--cd);color:var(--coral);}.pt-gold{background:var(--gld);color:var(--gold);}.pt-p{background:var(--pd);color:var(--purple);}
+        .proj h3{font-family:var(--display);font-size:1.15rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.55rem;}
+        .proj p{color:var(--muted);font-size:.875rem;line-height:1.65;flex:1;margin-bottom:1.25rem;}
+        .stack{display:flex;flex-wrap:wrap;gap:.38rem;margin-bottom:1.3rem;}
+        .proj-link{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--mono);font-size:.75rem;color:var(--fg);text-decoration:none;letter-spacing:.04em;position:relative;z-index:1;transition:color .2s;}
+        .proj-link:hover{color:var(--green);}
+        .proj-link svg{width:.9rem;height:.9rem;transition:transform .25s;flex-shrink:0;}
+        .proj:hover .proj-link svg{transform:translateX(4px);}
+        /* CASE STUDIES */
+        .cases-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+        .case{padding:2.25rem;border-radius:var(--r);background:rgba(255,255,255,.014);border:1px solid var(--border);transition:transform .35s,border-color .35s;}
+        .case:hover{transform:translateY(-5px);}
+        .case-icon{font-size:2.4rem;display:block;margin-bottom:1.2rem;}
+        .case h3{font-family:var(--display);font-size:1.28rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.5rem;}
+        .case-sub{font-family:var(--mono);font-size:.68rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;}
+        .case p{color:var(--muted);font-size:.88rem;line-height:1.67;margin-bottom:1.4rem;}
+        .case-results{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:1.4rem;}
+        .cr{padding:.75rem;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:.65rem;text-align:center;}
+        .cr strong{display:block;font-family:var(--display);font-size:1.3rem;font-weight:800;}
+        .cr span{font-family:var(--mono);font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;}
+        .case-tag-list{display:flex;flex-wrap:wrap;gap:.38rem;}
+        /* PROCESS */
+        .process-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;}
+        .step{padding:1.85rem;border-radius:var(--r);background:rgba(255,255,255,.014);border:1px solid var(--border);transition:border-color .3s;}
+        .step:hover{border-color:rgba(0,232,122,.18);}
+        .step-num{font-family:var(--mono);font-size:2.8rem;font-weight:500;color:rgba(0,232,122,.1);line-height:1;margin-bottom:1.1rem;display:block;}
+        .step h4{font-family:var(--display);font-size:1.05rem;font-weight:700;margin-bottom:.55rem;}
+        .step p{font-size:.87rem;color:var(--muted);line-height:1.62;}
+        /* CONTACT */
+        .contact-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:1.25rem;align-items:start;}
+        .contact-main{padding:3rem;border-radius:var(--r);background:rgba(255,255,255,.016);border:1px solid var(--border);}
+        .contact-main h2{font-family:var(--display);font-size:clamp(2.1rem,3.5vw,3.2rem);font-weight:800;letter-spacing:-.03em;margin-bottom:1rem;line-height:1.04;}
+        .contact-main p{color:var(--muted);line-height:1.72;margin-bottom:2rem;max-width:460px;font-size:.97rem;}
+        .contact-email{font-family:var(--mono);font-size:1.05rem;color:var(--green);text-decoration:none;display:block;margin-bottom:1.75rem;transition:opacity .2s;letter-spacing:.02em;}
+        .contact-email:hover{opacity:.7;}
+        .contact-btns{display:flex;flex-wrap:wrap;gap:.85rem;}
+        .contact-side{display:flex;flex-direction:column;gap:1.15rem;}
+        .side-card{padding:1.75rem;border-radius:var(--r);background:rgba(255,255,255,.014);border:1px solid var(--border);}
+        .side-card h4{font-family:var(--mono);font-size:.7rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.1rem;}
+        .cap-list{list-style:none;display:grid;gap:.55rem;}
+        .cap-list li{font-size:.88rem;color:rgba(238,242,247,.78);display:flex;align-items:center;gap:.65rem;}
+        .cap-list li::before{content:'▸';font-size:.62rem;color:var(--green);flex-shrink:0;}
+        .avail{display:flex;align-items:center;gap:.55rem;font-family:var(--mono);font-size:.8rem;color:var(--green);}
+        .avail-dot{width:.52rem;height:.52rem;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);flex-shrink:0;animation:pdot 2.2s ease-in-out infinite;}
+        @keyframes pdot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.45;transform:scale(.65);}}
+        footer{padding:2.25rem 0;border-top:1px solid var(--border);}
+        .footer-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+        .footer-row span{font-family:var(--mono);font-size:.74rem;color:var(--dim);}
+        @media(max-width:1024px){.hero-grid,.dual-grid,.feat-grid,.contact-grid{grid-template-columns:1fr;}.terminal{display:none;}.proj-grid,.cases-grid{grid-template-columns:repeat(2,1fr);}.process-grid{grid-template-columns:repeat(2,1fr);}.stats-row{grid-template-columns:repeat(3,1fr);}}
+        @media(max-width:640px){.proj-grid,.cases-grid{grid-template-columns:1fr;}.process-grid,.stats-row{grid-template-columns:repeat(2,1fr);}nav .nav-links{display:none;}}
     </style>
 </head>
 <body>
-    <div class="loading-screen" aria-hidden="true">Loading...</div>
-    <canvas id="threejs-canvas"></canvas>
-    <div class="overlay-gradient" aria-hidden="true"></div>
-
-    <div class="content">
-        <nav>
-            <div class="logo">YA1 CREATIVE</div>
-            <div class="nav-links">
-                <a href="#about">About</a>
-                <a href="#work">Work</a>
-                <a href="#services">Services</a>
-                <a href="#contact">Contact</a>
-            </div>
-        </nav>
-
-        <section class="hero" id="about">
-            <div class="hero-copy">
-                <h1>Product-grade experiences for modern brands.</h1>
-                <p>I design and build immersive web applications that feel human, run fast, and solve real business problems. Explore a curated set of live CRM, ecommerce, and experiential projects tailored for Los Angeles teams.</p>
-                <div class="button-group">
-                    <a class="cta-button" href="#work">View Signature Projects</a>
-                    <a class="ghost-button" href="#contact">Schedule a Discovery Call</a>
+<canvas id="bg-canvas"></canvas>
+<div class="noise" aria-hidden="true"></div>
+<div class="glow" aria-hidden="true"></div>
+<div class="site">
+<!-- NAV -->
+<nav id="nav">
+    <a href="#" class="logo" data-text="YA1 CREATIVE">YA1 CREATIVE</a>
+    <div class="nav-links">
+        <a href="#services">Services</a>
+        <a href="#work">Work</a>
+        <a href="#marketing">Growth</a>
+        <a href="#process">Process</a>
+        <a href="#contact" class="nav-cta">Let's talk →</a>
+    </div>
+</nav>
+<!-- HERO -->
+<section class="hero" id="about">
+    <div class="wrap">
+        <div class="hero-grid">
+            <div>
+                <div class="eyebrow r">Los Angeles · Available Worldwide</div>
+                <h1 class="r d1">We build.<br>We <span class="c-green">rank.</span><br>We <span class="c-blue">convert.</span></h1>
+                <p class="hero-p r d2">Full-stack product studio in LA. We engineer enterprise software, apps, and branded digital ecosystems — then drive qualified traffic, dominate search, and make them print revenue.</p>
+                <div class="hero-btns r d3">
+                    <a class="btn btn-solid" href="#work">View Work <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+                    <a class="btn btn-outline" href="#contact">Schedule a Call</a>
                 </div>
             </div>
-            <div class="metrics">
-                <div class="metric-card">
-                    <span>Industries Served</span>
-                    <strong>10+</strong>
-                </div>
-                <div class="metric-card">
-                    <span>Experience</span>
-                    <strong>8 yrs</strong>
-                </div>
-                <div class="metric-card">
-                    <span>Avg. Conversion Lift</span>
-                    <strong>32%</strong>
-                </div>
-            </div>
-        </section>
-
-        <section id="work">
-            <div class="section-header">
-                <h2>Signature project playbooks</h2>
-                <p>Each concept is production-ready, built with maintainable code, clean UX, and a focus on measurable business outcomes. Dive into the live demos to experience the flows in detail.</p>
-            </div>
-            <div class="projects-grid">
-                <article class="project-card">
-                    <div class="project-tag">CRM Platform</div>
-                    <h3>Latitude CRM – Unified Client Intelligence</h3>
-                    <p>End-to-end CRM designed for boutique agencies. Includes pipeline forecasting, sentiment-driven alerts, and automation hand-offs powered by custom AI copilots.</p>
-                    <div class="project-meta">
-                        <span>Product Strategy</span>
-                        <span>Next.js · Supabase · Tailwind</span>
-                    </div>
-                    <a class="project-link" href="projects/latitude-crm.html">Explore the experience
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M5 12h14"></path>
-                            <path d="M13 6l6 6-6 6"></path>
-                        </svg>
-                    </a>
-                </article>
-
-                <article class="project-card">
-                    <div class="project-tag">Ecommerce</div>
-                    <h3>Halo Haus – Immersive Lifestyle Retail</h3>
-                    <p>A conversion-first ecommerce flow with cinematic merchandising, guided bundling, and a polished checkout that syncs with Shopify Plus and Klaviyo marketing loops.</p>
-                    <div class="project-meta">
-                        <span>Experience Design</span>
-                        <span>Remix · Shopify Hydrogen · Sanity</span>
-                    </div>
-                    <a class="project-link" href="projects/halo-haus.html">View storefront concept
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M5 12h14"></path>
-                            <path d="M13 6l6 6-6 6"></path>
-                        </svg>
-                    </a>
-                </article>
-
-                <article class="project-card">
-                    <div class="project-tag">Interactive Showcase</div>
-                    <h3>PulseFrame – Animated Product Stories</h3>
-                    <p>Interactive 2D/3D storytelling engine for launch campaigns. Layered scroll choreography, WebGL particles, and collaborative storyboards for art directors.</p>
-                    <div class="project-meta">
-                        <span>Motion Systems</span>
-                        <span>Three.js · GSAP · Web Audio API</span>
-                    </div>
-                    <a class="project-link" href="projects/pulseframe.html">Launch interactive preview
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M5 12h14"></path>
-                            <path d="M13 6l6 6-6 6"></path>
-                        </svg>
-                    </a>
-                </article>
-
-                <article class="project-card">
-                    <div class="project-tag">Hospitality Growth</div>
-                    <h3>MenuLoop – QR-led Guest Engagement</h3>
-                    <p>QR-first ordering and loyalty for LA restaurants. Guests scan, browse animated menus, and earn perks while managers monitor real-time inventory and staff pacing.</p>
-                    <div class="project-meta">
-                        <span>Product Design</span>
-                        <span>Vue · Firebase · Stripe Terminal</span>
-                    </div>
-                    <a class="project-link" href="projects/menuloop.html">See restaurant system
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M5 12h14"></path>
-                            <path d="M13 6l6 6-6 6"></path>
-                        </svg>
-                    </a>
-                </article>
-            </div>
-        </section>
-
-        <section id="services">
-            <div class="section-header">
-                <h2>From discovery to launch</h2>
-                <p>A structured process keeps every build grounded in business outcomes and measurable KPIs. I stay close to your team to ship fast and iterate even faster.</p>
-            </div>
-            <div class="services-grid">
-                <div class="service-card">
-                    <h3>Product &amp; UX Strategy</h3>
-                    <ul>
-                        <li>Customer journey mapping workshops</li>
-                        <li>Jobs-to-be-done research sprints</li>
-                        <li>Analytics &amp; instrumentation planning</li>
-                    </ul>
-                </div>
-                <div class="service-card">
-                    <h3>Full-stack Development</h3>
-                    <ul>
-                        <li>React, Vue, and native WebGL builds</li>
-                        <li>High-performance data visualizations</li>
-                        <li>API design, authentication, and ops</li>
-                    </ul>
-                </div>
-                <div class="service-card">
-                    <h3>Growth &amp; Optimization</h3>
-                    <ul>
-                        <li>Experiment frameworks &amp; CRO setup</li>
-                        <li>Lifecycle automation and CRM flows</li>
-                        <li>Ongoing A/B testing &amp; performance tuning</li>
-                    </ul>
+            <div class="terminal r d2">
+                <div class="t-bar"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span><span class="t-title">ya1creative — studio.config</span></div>
+                <div class="t-body">
+                    <div><span class="tp">❯ </span><span class="tc">cat studio.config.json</span></div><br>
+                    <div>{</div>
+                    <div>&nbsp;&nbsp;<span class="tk">"studio"</span>: <span class="ts">"YA1 Creative"</span>,</div>
+                    <div>&nbsp;&nbsp;<span class="tk">"base"</span>: <span class="ts">"Los Angeles, CA"</span>,</div>
+                    <div>&nbsp;&nbsp;<span class="tk">"services"</span>: [<span class="ts">"Enterprise SaaS"</span>, <span class="ts">"Web3"</span>,</div>
+                    <div>&nbsp;&nbsp;&nbsp;<span class="ts">"Technical SEO"</span>, <span class="ts">"Brand &amp; Growth"</span>],</div>
+                    <div>&nbsp;&nbsp;<span class="tk">"years"</span>: <span class="tn">8</span>,</div>
+                    <div>&nbsp;&nbsp;<span class="tk">"sales_driven"</span>: <span class="ts">"2000+"</span>,</div>
+                    <div>&nbsp;&nbsp;<span class="tk">"lift_avg"</span>: <span class="ts">"32%"</span>,</div>
+                    <div>&nbsp;&nbsp;<span class="tk">"status"</span>: <span class="ts">"accepting_clients"</span></div>
+                    <div>}</div><br>
+                    <div><span class="tp">❯ </span><span class="tc">./deploy.sh --prod</span></div>
+                    <div><span class="tco">// ✓ Lighthouse perf: 100 · SEO: 98</span></div>
+                    <div><span class="tco">// ✓ Core Web Vitals: PASS</span></div>
+                    <div><span class="tp">❯ </span><span class="cursor"></span></div>
                 </div>
             </div>
-        </section>
-
-        <section id="contact" class="contact-section">
-            <div class="contact-card">
-                <span>Let’s build the next launch</span>
-                <h2>Tell me about the product you’re ready to ship.</h2>
-                <p style="color: var(--muted); line-height: 1.6;">I typically partner with marketing, product, and innovation teams across Los Angeles to deliver launches in 4–8 weeks. Share your goals and I’ll send over a tailored roadmap.</p>
-                <a href="mailto:hello@ya1creative.com">hello@ya1creative.com</a>
-                <a class="ghost-button" href="https://cal.com" target="_blank" rel="noopener">Book a 30-min call</a>
-            </div>
-            <div class="contact-card" style="background: rgba(96, 165, 250, 0.12); color: #0f172a;">
-                <span style="color: rgba(15, 23, 42, 0.6);">Capabilities Snapshot</span>
-                <ul style="list-style: none; color: rgba(15, 23, 42, 0.8); display: grid; gap: 0.75rem; font-size: 0.95rem;">
-                    <li>• WebGL &amp; motion design systems</li>
-                    <li>• CRM &amp; revenue intelligence dashboards</li>
-                    <li>• Shopify &amp; custom commerce integrations</li>
-                    <li>• Hospitality loyalty + QR ordering programs</li>
-                    <li>• Fractional product leadership engagements</li>
+        </div>
+    </div>
+</section>
+<!-- STATS -->
+<div class="stats-bar">
+    <div class="wrap">
+        <div class="stats-row">
+            <div class="r"><span class="stat-num"><span class="cnt" data-t="8">0</span><span class="sa">+</span></span><span class="stat-lbl">Years Shipping</span></div>
+            <div class="r d1"><span class="stat-num"><span class="cnt" data-t="2000">0</span><span class="sa">+</span></span><span class="stat-lbl">Sales Driven</span></div>
+            <div class="r d2"><span class="stat-num"><span class="cnt" data-t="32">0</span><span class="sa">%</span></span><span class="stat-lbl">Avg. Conversion Lift</span></div>
+            <div class="r d3"><span class="stat-num"><span class="cnt" data-t="10">0</span><span class="sa">+</span></span><span class="stat-lbl">Industries</span></div>
+            <div class="r d4"><span class="stat-num">4<span class="sa">–8wk</span></span><span class="stat-lbl">Delivery Window</span></div>
+        </div>
+    </div>
+</div>
+<!-- SERVICES -->
+<section id="services">
+    <div class="wrap">
+        <div class="sec-label r">What We Do</div>
+        <div class="sec-head">
+            <h2 class="sec-h2 r d1">Two disciplines.<br>One obsession.</h2>
+            <p class="sec-p r d2">We engineer fast, scalable products — then fill them with the right audience and make them convert on autopilot.</p>
+        </div>
+        <div class="dual-grid">
+            <div class="track build r">
+                <span class="t-chip g">I BUILD</span>
+                <span class="track-glyph">⌨️</span>
+                <h3>Product Engineering</h3>
+                <p>Production-grade web and mobile applications built for performance, maintainability, and serious scale.</p>
+                <ul class="svc-list">
+                    <li>Full-stack web apps (React, Vue, Next.js, Django)</li>
+                    <li>Enterprise SaaS &amp; custom software platforms</li>
+                    <li>Mobile app design &amp; development</li>
+                    <li>Ecommerce &amp; Shopify integrations</li>
+                    <li>Web3 / Blockchain / Smart Contracts (Solidity)</li>
+                    <li>AI integrations &amp; automation pipelines</li>
+                    <li>WebGL, 3D &amp; immersive motion UI</li>
+                    <li>API design, authentication &amp; DevOps</li>
                 </ul>
             </div>
-        </section>
-
-        <footer>
-            © <span id="year"></span> YA1 Creative Studio · Based in Los Angeles · Available for select collaborations.
-        </footer>
+            <div class="track grow r d1">
+                <span class="t-chip b">I GROW</span>
+                <span class="track-glyph">📈</span>
+                <h3>Growth &amp; Visibility</h3>
+                <p>Strategic digital marketing that drives qualified traffic, builds brand authority, and maximizes ROI.</p>
+                <ul class="svc-list">
+                    <li>Technical SEO &amp; content strategy</li>
+                    <li>Local &amp; national search ranking</li>
+                    <li>Brand identity &amp; visual systems</li>
+                    <li>Paid media (Meta, Google Ads, TikTok)</li>
+                    <li>Email &amp; lifecycle marketing automation</li>
+                    <li>CRO, A/B testing &amp; analytics</li>
+                    <li>Ecommerce product SEO</li>
+                    <li>Social strategy &amp; content direction</li>
+                </ul>
+            </div>
+        </div>
     </div>
-
-    <script async src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script>
-        const yearSpan = document.getElementById('year');
-        if (yearSpan) {
-            yearSpan.textContent = new Date().getFullYear();
-        }
-
-        const loadingScreen = document.querySelector('.loading-screen');
-        window.addEventListener('load', () => {
-            if (loadingScreen) {
-                loadingScreen.classList.add('hidden');
-            }
-        });
-
-        // Initialize Three.js scene once script loads
-        window.addEventListener('load', () => {
-            if (typeof THREE === 'undefined') return;
-
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({
-                canvas: document.querySelector('#threejs-canvas'),
-                antialias: true,
-                alpha: true
-            });
-
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-            const geometry = new THREE.IcosahedronGeometry(12, 1);
-            const material = new THREE.MeshStandardMaterial({
-                color: 0x4f46e5,
-                metalness: 0.4,
-                roughness: 0.2,
-                emissive: 0x0f172a,
-                emissiveIntensity: 0.6,
-                wireframe: false
-            });
-
-            const mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-
-            const ambient = new THREE.AmbientLight(0xffffff, 0.35);
-            scene.add(ambient);
-
-            const pointLight = new THREE.PointLight(0x60a5fa, 1.2, 150);
-            pointLight.position.set(15, 20, 25);
-            scene.add(pointLight);
-
-            camera.position.z = 40;
-
-            function animate() {
-                requestAnimationFrame(animate);
-                mesh.rotation.x += 0.0025;
-                mesh.rotation.y += 0.0035;
-                renderer.render(scene, camera);
-            }
-
-            animate();
-
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-        });
-    </script>
-    <style>
-        .loading-screen {
-            position: fixed;
-            inset: 0;
-            display: grid;
-            place-items: center;
-            background: rgba(5, 6, 9, 0.92);
-            color: var(--muted);
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            z-index: 10;
-            transition: opacity 0.45s ease;
-        }
-
-        .loading-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-    </style>
+</section>
+<!-- FEATURED: CLAIMETAPP -->
+<section id="work">
+    <div class="wrap">
+        <div class="sec-label r">Featured Enterprise Project</div>
+        <div class="featured r d1">
+            <div class="feat-grid">
+                <div class="feat">
+                    <span class="feat-tag">Enterprise SaaS · Insurance Tech · Django</span>
+                    <h2>Water Mitigation Claims<br>Management Platform</h2>
+                    <p>End-to-end Django web application managing the full lifecycle of water damage insurance claims — from property intake and drag-and-drop room building, through Encircle API sync, Claude Vision AI field verification, Excel template auto-population, ALE lease pipeline management, and multi-engine PDF document generation. Built for <strong style="color:var(--fg)">All Phase Consulting</strong> at <a href="https://claimetapp.com/portfolio/" target="_blank" rel="noopener" style="color:var(--green);text-decoration:none;">claimetapp.com</a>.</p>
+                    <div class="feat-stack">
+                        <span class="chip">Django 4.2</span><span class="chip">PostgreSQL</span><span class="chip">Celery + Redis</span><span class="chip">Claude Vision AI</span><span class="chip">Encircle REST API</span><span class="chip">ReportLab</span><span class="chip">WeasyPrint</span><span class="chip">Docker + Nginx</span><span class="chip">OpenPyXL</span><span class="chip">LibreOffice UNO</span><span class="chip">django-celery-beat</span><span class="chip">SMTP/Gmail</span>
+                    </div>
+                    <div class="feat-btns">
+                        <a class="btn btn-solid" href="projects/claimetapp.html">Interactive Demo</a>
+                        <a class="btn btn-outline" href="https://claimetapp.com/portfolio/" target="_blank" rel="noopener">Live Project →</a>
+                    </div>
+                </div>
+                <div>
+                    <div class="feat-metrics">
+                        <div class="fm"><strong>23</strong><span>DB Models</span></div>
+                        <div class="fm"><strong>80+</strong><span>Endpoints</span></div>
+                        <div class="fm"><strong>120+</strong><span>View Fns</span></div>
+                        <div class="fm"><strong>40+</strong><span>Celery Tasks</span></div>
+                        <div class="fm"><strong>6</strong><span>3rd-Party APIs</span></div>
+                        <div class="fm"><strong>3</strong><span>PDF Engines</span></div>
+                    </div>
+                    <div class="feat-features">
+                        <div class="ff">Multi-step claim creation + room builder</div>
+                        <div class="ff">Claude Vision AI sensor image auto-rename</div>
+                        <div class="ff">Encircle real-time webhook sync</div>
+                        <div class="ff">ALE full lease pipeline (draft→signed)</div>
+                        <div class="ff">Thermal label + Excel auto-population</div>
+                        <div class="ff">Scope checklist with Xactimate codes</div>
+                        <div class="ff">Server file system with version history</div>
+                        <div class="ff">Email campaigns + open pixel tracking</div>
+                        <div class="ff">Equipment doc checker (FOUND/PARTIAL)</div>
+                        <div class="ff">Moisture readings dashboard + CSV export</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- SOFTWARE PROJECTS -->
+<section>
+    <div class="wrap">
+        <div class="sec-label r">Software Projects</div>
+        <div class="sec-head">
+            <h2 class="sec-h2 r d1">Shipped code.<br>Real systems.</h2>
+            <p class="sec-p r d2">From Web3 platforms to AI automation tooling — every project is production code with measurable impact.</p>
+        </div>
+        <div class="proj-grid">
+            <article class="proj r">
+                <div class="proj-tag pt-g">Web3 · Metaverse</div>
+                <h3>Dream Village</h3>
+                <p>Gamified metaverse platform with on-chain referral economy. Villager model handles crypto wallet registration, LTC commission auto-payouts via BTCPay pull-payments, and HMAC-verified webhook processing with MySQL connection pooling.</p>
+                <div class="stack"><span class="chip">Node.js</span><span class="chip">MySQL</span><span class="chip">BTCPay Server</span><span class="chip">Crypto HMAC</span><span class="chip">React (Vite)</span></div>
+                <a class="proj-link" href="projects/dreamvillage.html">Explore platform <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+            </article>
+            <article class="proj blue r d1">
+                <div class="proj-tag pt-b">FinTech · Trading</div>
+                <h3>The Trading Lab</h3>
+                <p>Full-stack algorithmic trading education and simulation platform. Interactive lab environment for backtesting strategies, paper trading, and learning technical analysis — built for aspiring quant traders.</p>
+                <div class="stack"><span class="chip">React</span><span class="chip">TypeScript</span><span class="chip">Vite</span><span class="chip">Node.js</span><span class="chip">PostgreSQL</span></div>
+                <a class="proj-link" href="projects/tradinglabs.html">View platform <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+            </article>
+            <article class="proj gold r d2">
+                <div class="proj-tag pt-gold">AI · Automation · Python</div>
+                <h3>Sensor Image Renamer</h3>
+                <p>Python desktop app using Claude Vision AI to auto-read and batch-rename field sensor photos. 4+ concurrent API calls via ThreadPoolExecutor, real-time progress bar, manual correction panel for unreadable screens, and per-subfolder ZIP export.</p>
+                <div class="stack"><span class="chip">Python</span><span class="chip">Claude Opus 4</span><span class="chip">Tkinter GUI</span><span class="chip">ThreadPoolExecutor</span><span class="chip">Pillow</span></div>
+                <a class="proj-link" href="projects/sensor-renamer.html">View tool <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+            </article>
+            <article class="proj r d3">
+                <div class="proj-tag pt-g">AI · Chatbot</div>
+                <h3>HalimaBot</h3>
+                <p>Intent-based conversational AI backend for emotional support and personal growth coaching. Express.js API with regex-pattern matching on a structured intents corpus — handles dream journaling, affirmations, and goal-setting with MySQL persistence.</p>
+                <div class="stack"><span class="chip">Node.js</span><span class="chip">Express</span><span class="chip">MySQL</span><span class="chip">Intent NLP</span></div>
+                <a class="proj-link" href="projects/halimabot.html">See chatbot <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+            </article>
+            <article class="proj purple r">
+                <div class="proj-tag pt-p">Blockchain · Solidity</div>
+                <h3>Diaspora &amp; Desire Tokens</h3>
+                <p>Dual ERC-20 smart contracts on EVM chains. DiasporaPoint (DIP) — 1 trillion supply governance token for community rewards. DesireToken — utility token for in-platform transactions. Built on OpenZeppelin, optimized for gas, ready for DEX listing.</p>
+                <div class="stack"><span class="chip">Solidity ^0.8.27</span><span class="chip">ERC-20</span><span class="chip">OpenZeppelin</span><span class="chip">Hardhat</span></div>
+                <a class="proj-link" href="projects/tokens.html">View contracts <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+            </article>
+            <article class="proj coral r d1">
+                <div class="proj-tag pt-c">Crypto · Payments</div>
+                <h3>BTCPay Referral Engine</h3>
+                <p>Production referral commission system on BTCPay Server pull-payments. Auto-creates and caches a shared commission pool, processes on-chain LTC payouts with autoApproveClaims, and handles API error codes (overdraft, amount-too-low) with full error recovery.</p>
+                <div class="stack"><span class="chip">Node.js</span><span class="chip">BTCPay API v1</span><span class="chip">Axios</span><span class="chip">Pull-Payments</span><span class="chip">LTC On-Chain</span></div>
+                <a class="proj-link" href="projects/btcpay.html">View integration <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+            </article>
+        </div>
+    </div>
+</section>
+<!-- MARKETING CASE STUDIES -->
+<section id="marketing">
+    <div class="wrap">
+        <div class="sec-label gold r">Growth &amp; Marketing</div>
+        <div class="sec-head">
+            <h2 class="sec-h2 r d1">Products built.<br><span class="c-gold">Brands scaled.</span></h2>
+            <p class="sec-p r d2">Engineering a great product is half the battle. These case studies show what happens when you combine technical execution with strategic growth marketing.</p>
+        </div>
+        <div class="cases-grid">
+            <!-- Secretariat -->
+            <div class="case r" style="border-color:rgba(255,213,128,.15);">
+                <span class="case-icon">📊</span>
+                <div class="proj-tag pt-gold" style="margin-bottom:.85rem;">FinTech App · Growth Marketing</div>
+                <h3>Secretariat App</h3>
+                <div class="case-sub">Personal Finance &amp; Auto-Trading Platform</div>
+                <p>Built and scaled a personal finance automation app with brokerage API integrations and configurable trading strategies. Led the full digital marketing campaign from launch to 2,000+ sales — through SEO content architecture, Meta paid media, email funnels, and community-driven virality tactics.</p>
+                <div class="case-results">
+                    <div class="cr"><strong style="color:var(--gold)">2,000+</strong><span>Total Sales</span></div>
+                    <div class="cr"><strong style="color:var(--gold)">4.8×</strong><span>ROAS on Meta</span></div>
+                    <div class="cr"><strong style="color:var(--gold)">#1</strong><span>Keyword Rankings</span></div>
+                    <div class="cr"><strong style="color:var(--gold)">68%</strong><span>Organic Traffic Share</span></div>
+                </div>
+                <div class="case-tag-list"><span class="chip">React Native</span><span class="chip">Trading APIs</span><span class="chip">SEO</span><span class="chip">Meta Ads</span><span class="chip">Email Funnels</span><span class="chip">Brand Identity</span></div>
+            </div>
+            <!-- Pilates -->
+            <div class="case r d1" style="border-color:rgba(167,139,250,.15);">
+                <span class="case-icon">🧘</span>
+                <div class="proj-tag pt-p" style="margin-bottom:.85rem;">Local Business · SEO &amp; Branding</div>
+                <h3>Pilates Studio</h3>
+                <div class="case-sub">Local Search Dominance &amp; Brand Elevation</div>
+                <p>Full SEO and branding overhaul for a Los Angeles pilates studio. Architected local search strategy covering Google Business Profile optimization, schema markup, location content clusters, and citation building — taking the studio from invisible to page 1 for all primary keywords.</p>
+                <div class="case-results">
+                    <div class="cr"><strong style="color:var(--purple)">340%</strong><span>Organic Traffic Growth</span></div>
+                    <div class="cr"><strong style="color:var(--purple)">Top 3</strong><span>Local Pack</span></div>
+                    <div class="cr"><strong style="color:var(--purple)">12→1</strong><span>Avg. Rank Position</span></div>
+                    <div class="cr"><strong style="color:var(--purple)">85%</strong><span>Lead Increase</span></div>
+                </div>
+                <div class="case-tag-list"><span class="chip">Technical SEO</span><span class="chip">Local SEO</span><span class="chip">Brand Identity</span><span class="chip">GBP Optimization</span><span class="chip">Schema Markup</span></div>
+            </div>
+            <!-- Aesthetify -->
+            <div class="case r d2" style="border-color:rgba(56,189,248,.15);">
+                <span class="case-icon">📱</span>
+                <div class="proj-tag pt-b" style="margin-bottom:.85rem;">Ecommerce · Brand Building</div>
+                <h3>Aesthetify</h3>
+                <div class="case-sub">Phone Cases &amp; Matching Device Apparel</div>
+                <p>Built the full ecommerce brand and digital presence for Aesthetify — selling curated phone cases and matching device apparel collections. Custom Shopify storefront with collection SEO architecture and a Meta + TikTok paid strategy that turned a new store into a recognized brand.</p>
+                <div class="case-results">
+                    <div class="cr"><strong style="color:var(--blue)">3.2×</strong><span>Revenue Growth</span></div>
+                    <div class="cr"><strong style="color:var(--blue)">22%</strong><span>Conversion Rate</span></div>
+                    <div class="cr"><strong style="color:var(--blue)">Top 5</strong><span>Category Rankings</span></div>
+                    <div class="cr"><strong style="color:var(--blue)">58%</strong><span>Return Customer Rate</span></div>
+                </div>
+                <div class="case-tag-list"><span class="chip">Shopify</span><span class="chip">Product SEO</span><span class="chip">Brand Identity</span><span class="chip">Meta Ads</span><span class="chip">TikTok</span><span class="chip">Klaviyo</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- PROCESS -->
+<section id="process">
+    <div class="wrap">
+        <div class="sec-label r">How It Works</div>
+        <h2 class="sec-h2 r d1" style="margin-bottom:3.25rem;">Discovery to launch.<br>No fluff.</h2>
+        <div class="process-grid">
+            <div class="step r"><span class="step-num">01</span><h4>Discovery Sprint</h4><p>Deep-dive into your goals, audience, competitors, and tech stack. We leave with a concrete roadmap and zero open questions.</p></div>
+            <div class="step r d1"><span class="step-num">02</span><h4>Design &amp; Architecture</h4><p>UX flows, brand direction, technical architecture — aligned before a line of code is written or a dollar spent on ads.</p></div>
+            <div class="step r d2"><span class="step-num">03</span><h4>Build &amp; Optimize</h4><p>Clean code with Lighthouse 100 targets. Technical SEO baked in from day one — not patched on post-launch.</p></div>
+            <div class="step r d3"><span class="step-num">04</span><h4>Launch &amp; Scale</h4><p>Analytics, tracking, and growth campaigns live on day one. We iterate hard on real data — no vanity metrics.</p></div>
+        </div>
+    </div>
+</section>
+<!-- CONTACT -->
+<section id="contact">
+    <div class="wrap">
+        <div class="contact-grid">
+            <div class="contact-main r">
+                <div class="sec-label" style="margin-bottom:1.5rem;">Let's Build</div>
+                <h2>Ready to ship<br>something <span class="c-green">locked?</span></h2>
+                <p>I partner with marketing, product, and innovation teams to deliver launches in 4–8 weeks. Drop your goals — I'll have a tailored roadmap back within 24 hours.</p>
+                <a href="mailto:elevate@ya1creative.com" class="contact-email">elevate@ya1creative.com</a>
+                <div class="contact-btns">
+                    <a class="btn btn-solid" href="mailto:elevate@ya1creative.com">Send a Message</a>
+                    <a class="btn btn-outline" href="https://cal.com" target="_blank" rel="noopener">Book a 30-min Call</a>
+                </div>
+            </div>
+            <div class="contact-side">
+                <div class="side-card r d1"><h4>Availability</h4><div class="avail"><span class="avail-dot"></span>Currently accepting new clients</div></div>
+                <div class="side-card r d2">
+                    <h4>Full Capabilities</h4>
+                    <ul class="cap-list">
+                        <li>Enterprise software &amp; SaaS platforms</li>
+                        <li>Web3 / Blockchain / Smart Contracts</li>
+                        <li>AI integrations &amp; automation tooling</li>
+                        <li>Technical SEO &amp; search dominance</li>
+                        <li>Shopify &amp; custom commerce</li>
+                        <li>Paid media &amp; growth campaigns</li>
+                        <li>Brand identity &amp; visual systems</li>
+                        <li>Fractional product leadership</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<footer><div class="wrap"><div class="footer-row"><span>© <span id="yr"></span> YA1 Creative Studio · Los Angeles, CA</span><span>Built with precision. Ranked by design.</span></div></div></footer>
+</div>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+document.getElementById('yr').textContent=new Date().getFullYear();
+window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',scrollY>60);},{passive:true});
+const ro=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');ro.unobserve(x.target);}});},{threshold:.09});
+document.querySelectorAll('.r').forEach(el=>ro.observe(el));
+function animCount(el){const t=parseInt(el.dataset.t),d=t>100?1800:1300,t0=performance.now();(function tick(n){const p=Math.min((n-t0)/d,1),e=1-Math.pow(1-p,3);el.textContent=Math.round(e*t);if(p<1)requestAnimationFrame(tick);})(t0);}
+const co=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.querySelectorAll('.cnt').forEach(animCount);co.unobserve(x.target);}});},{threshold:.3});
+document.querySelectorAll('.stats-row').forEach(el=>co.observe(el));
+window.addEventListener('load',()=>{
+    if(typeof THREE==='undefined')return;
+    const cv=document.getElementById('bg-canvas'),ren=new THREE.WebGLRenderer({canvas:cv,antialias:false,alpha:true});
+    ren.setSize(innerWidth,innerHeight);ren.setPixelRatio(Math.min(devicePixelRatio,1.5));
+    const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,.1,1000);cam.position.z=85;
+    const N=2200,pos=new Float32Array(N*3);
+    for(let i=0;i<N;i++){pos[i*3]=(Math.random()-.5)*240;pos[i*3+1]=(Math.random()-.5)*240;pos[i*3+2]=(Math.random()-.5)*130;}
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    const pts=new THREE.Points(g,new THREE.PointsMaterial({color:0x00e87a,size:.38,sizeAttenuation:true,transparent:true,opacity:.26}));sc.add(pts);
+    const p2=new Float32Array(900*3);for(let i=0;i<900;i++){p2[i*3]=(Math.random()-.5)*250;p2[i*3+1]=(Math.random()-.5)*250;p2[i*3+2]=(Math.random()-.5)*140;}
+    const g2=new THREE.BufferGeometry();g2.setAttribute('position',new THREE.BufferAttribute(p2,3));
+    sc.add(new THREE.Points(g2,new THREE.PointsMaterial({color:0x38bdf8,size:.28,sizeAttenuation:true,transparent:true,opacity:.13})));
+    let sy=0,mx=0,my=0;
+    window.addEventListener('scroll',()=>{sy=scrollY;},{passive:true});
+    window.addEventListener('mousemove',e=>{mx=(e.clientX/innerWidth-.5)*.012;my=(e.clientY/innerHeight-.5)*.012;},{passive:true});
+    (function anim(){requestAnimationFrame(anim);const t=Date.now()*.00028;pts.rotation.y=t*.14+mx;pts.rotation.x=t*.055+my;cam.position.y=-sy*.018;ren.render(sc,cam);})();
+    window.addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight);});
+});
+</script>
 </body>
 </html>
