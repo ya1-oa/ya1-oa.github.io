@@ -1,0 +1,95 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Sensor Image Renamer — YA1 Creative</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}:root{--bg:#030507;--bg2:#0b1118;--fg:#eef2f7;--muted:rgba(238,242,247,.52);--green:#00e87a;--gd:rgba(0,232,122,.12);--blue:#38bdf8;--gold:#ffd580;--coral:#ff4d6d;--border:rgba(238,242,247,.07);}body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;min-height:100vh;}
+.topbar{padding:.85rem 2rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid var(--border);}
+.tb-back{font-size:.78rem;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;}
+.tb-back:hover{color:var(--green);}
+.content{max-width:900px;margin:0 auto;padding:3.5rem 2rem;}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold);letter-spacing:.16em;text-transform:uppercase;margin-bottom:1.1rem;display:flex;align-items:center;gap:.7rem;}
+.eyebrow::before{content:'';display:block;width:1.5rem;height:1px;background:var(--gold);}
+h1{font-family:'Syne',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.03em;margin-bottom:1rem;line-height:1.02;}
+.lead{font-size:1.05rem;color:var(--muted);line-height:1.72;max-width:640px;margin-bottom:2.5rem;}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2.5rem;}
+.chip{font-family:'JetBrains Mono',monospace;font-size:.65rem;padding:.22rem .65rem;border:1px solid var(--border);border-radius:2px;color:var(--muted);}
+.demo-box{background:var(--bg2);border:1px solid rgba(238,242,247,.09);border-radius:1rem;overflow:hidden;margin-bottom:2rem;}
+.demo-header{padding:.7rem 1.2rem;background:rgba(255,255,255,.025);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:.4rem;}
+.dot{width:.65rem;height:.65rem;border-radius:50%;}.dr{background:#ff5f57;}.dy{background:#febc2e;}.dg{background:#28c840;}
+.demo-title{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:rgba(238,242,247,.28);margin:0 auto;transform:translateX(-.75rem);}
+.demo-body{padding:1.5rem;}
+.upload-zone{border:1.5px dashed rgba(0,232,122,.3);border-radius:.65rem;padding:2rem;text-align:center;margin-bottom:1.25rem;cursor:pointer;transition:border-color .2s,background .2s;}
+.upload-zone:hover{border-color:var(--green);background:rgba(0,232,122,.03);}
+.upload-zone p{font-size:.85rem;color:var(--muted);margin-top:.5rem;}
+.upload-zone span{font-size:2rem;}
+.prog-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.65rem;}
+.prog-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.prog-bar{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:2px;background:var(--green);transition:width 1s ease;}
+.prog-status{font-family:'JetBrains Mono',monospace;font-size:.68rem;width:80px;text-align:right;}
+.result-table{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:.72rem;}
+.result-table th{padding:.5rem .75rem;color:rgba(238,242,247,.4);text-transform:uppercase;font-size:.62rem;letter-spacing:.08em;border-bottom:1px solid var(--border);text-align:left;}
+.result-table td{padding:.55rem .75rem;border-bottom:1px solid rgba(255,255,255,.04);}
+.ok{color:var(--green);}.warn{color:var(--gold);}.err{color:var(--coral);}
+.run-btn{width:100%;padding:.75rem;background:var(--green);color:#000;border:none;border-radius:.5rem;font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:500;cursor:pointer;transition:opacity .2s;margin-top:.85rem;}
+.run-btn:hover{opacity:.85;}
+.features{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:2rem;}
+.feat-card{padding:1.35rem;background:rgba(255,255,255,.018);border:1px solid var(--border);border-radius:.85rem;}
+.feat-card h4{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.5rem;}
+.feat-card p{font-size:.85rem;color:var(--muted);line-height:1.6;}
+</style></head><body>
+<div class="topbar"><a class="tb-back" href="../index.html">← Portfolio</a><span style="color:var(--muted);font-size:.75rem;font-family:'JetBrains Mono',monospace;">/ sensor-image-renamer</span></div>
+<div class="content">
+<div class="eyebrow">AI Automation · Python · Claude Vision</div>
+<h1>Sensor Image <span style="color:var(--gold)">Renamer</span></h1>
+<p class="lead">Python desktop GUI app that uses Claude Vision AI to auto-read sensor display values off field photos and rename each file with its readings — then sorts into organized subfolders. Processes 4+ images concurrently via ThreadPoolExecutor.</p>
+<div class="chips"><span class="chip">Python 3.11</span><span class="chip">Claude Opus 4</span><span class="chip">Tkinter GUI</span><span class="chip">ThreadPoolExecutor</span><span class="chip">Pillow / PIL</span><span class="chip">concurrent.futures</span></div>
+<div class="demo-box">
+    <div class="demo-header"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span><span class="demo-title">sensor_image_renamer.py — Interactive Demo</span></div>
+    <div class="demo-body">
+        <div class="upload-zone" onclick="startProcessing()"><span>📁</span><p>Click to simulate batch processing 8 sensor images</p></div>
+        <div id="progress-section" style="display:none;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);margin-bottom:.85rem;">Processing with Claude Vision API · 4 workers · claude-opus-4-6</div>
+            <div id="prog-rows"></div>
+        </div>
+        <div id="results-section" style="display:none;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--green);margin-bottom:.75rem;">✓ Batch complete — 7 renamed · 1 queued for manual correction</div>
+            <table class="result-table">
+                <thead><tr><th>Original</th><th>Renamed To</th><th>Folder</th><th>Status</th></tr></thead>
+                <tbody id="result-rows"></tbody>
+            </table>
+            <button class="run-btn" onclick="resetDemo()">↻ Run Again</button>
+        </div>
+    </div>
+</div>
+<div class="features">
+    <div class="feat-card"><h4>Auto-Detection</h4><p>Claude Vision identifies device type from visual evidence — MC meter (single value) vs RH/T/GPP logger (2–3 values) — no manual toggle required.</p></div>
+    <div class="feat-card"><h4>Parallel Processing</h4><p>ThreadPoolExecutor runs 4 concurrent API calls, slashing batch time by 4× vs sequential processing on large photo sets.</p></div>
+    <div class="feat-card"><h4>NA Correction Queue</h4><p>Unreadable values become NA placeholders (e.g. <code style="color:var(--gold)">TNAUNA</code>) and are automatically queued for the built-in manual correction panel.</p></div>
+    <div class="feat-card"><h4>ZIP Export</h4><p>Per-subfolder and full-session ZIP downloads for easy handoff to adjusters and field documentation systems.</p></div>
+</div>
+</div>
+<script>
+const images=[{o:'IMG_4823.jpg',r:'RH65.3_T22.1_GPP450.7.jpg',f:'RH_T_GPP/',s:'ok'},{o:'IMG_4824.jpg',r:'MC19.5.jpg',f:'MC/',s:'ok'},{o:'IMG_4825.jpg',r:'RH71.2_TNAUNA_GPPNA.jpg',f:'RH_T_GPP/',s:'warn'},{o:'IMG_4826.jpg',r:'MC24.8.jpg',f:'MC/',s:'ok'},{o:'IMG_4827.jpg',r:'RH58.9_T19.4_GPP380.2.jpg',f:'RH_T_GPP/',s:'ok'},{o:'IMG_4828.jpg',r:'MC15.3.jpg',f:'MC/',s:'ok'},{o:'IMG_4829.jpg',r:'RH48.1_T20.7_GPP295.4.jpg',f:'RH_T_GPP/',s:'ok'},{o:'IMG_4830.jpg',r:'MC28.1.jpg',f:'MC/',s:'ok'}];
+function startProcessing(){
+    document.querySelector('.upload-zone').style.display='none';
+    document.getElementById('progress-section').style.display='block';
+    const pr=document.getElementById('prog-rows');
+    pr.innerHTML=images.map((img,i)=>`<div class="prog-row"><div class="prog-label">${img.o}</div><div class="prog-bar"><div class="prog-fill" id="pf${i}" style="width:0%"></div></div><div class="prog-status" id="ps${i}" style="color:var(--muted)">Queued</div></div>`).join('');
+    images.forEach((img,i)=>{
+        const delay=Math.floor(i/4)*800+Math.random()*400;
+        setTimeout(()=>{
+            document.getElementById('ps'+i).textContent='Processing…';document.getElementById('ps'+i).style.color='var(--blue)';
+            let w=0;const iv=setInterval(()=>{w+=8;document.getElementById('pf'+i).style.width=Math.min(w,95)+'%';if(w>=95){clearInterval(iv);}},50);
+            setTimeout(()=>{document.getElementById('pf'+i).style.width='100%';document.getElementById('ps'+i).textContent=img.s==='ok'?'✓ Done':'⚠ Review';document.getElementById('ps'+i).style.color=img.s==='ok'?'var(--green)':'var(--gold)';
+            if(i===images.length-1)setTimeout(showResults,600);},700);
+        },delay);
+    });
+}
+function showResults(){
+    document.getElementById('progress-section').style.display='none';
+    document.getElementById('results-section').style.display='block';
+    const rb=document.getElementById('result-rows');
+    rb.innerHTML=images.map(img=>`<tr><td style="color:var(--muted)">${img.o}</td><td class="${img.s}">${img.r}</td><td style="color:var(--muted)">${img.f}</td><td class="${img.s}">${img.s==='ok'?'✓ Renamed':'⚠ Manual Review'}</td></tr>`).join('');
+}
+function resetDemo(){document.querySelector('.upload-zone').style.display='';document.getElementById('progress-section').style.display='none';document.getElementById('results-section').style.display='none';}
+</script>
+</body></html>

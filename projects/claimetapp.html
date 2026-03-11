@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClaimeTapp — Water Mitigation Claims Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+        :root{--bg:#0d1117;--bg1:#161b22;--bg2:#21262d;--fg:#e6edf3;--muted:#8b949e;--dim:#484f58;--green:#3fb950;--blue:#58a6ff;--coral:#f85149;--gold:#d29922;--purple:#bc8cff;--border:#30363d;--r:8px;}
+        body{background:var(--bg);color:var(--fg);font-family:'Inter',sans-serif;font-size:14px;display:flex;flex-direction:column;min-height:100vh;}
+
+        /* TOP BAR */
+        .topbar{height:44px;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1rem;gap:1rem;flex-shrink:0;}
+        .tb-logo{font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:500;color:var(--green);letter-spacing:.05em;}
+        .tb-back{font-size:.78rem;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:.35rem;transition:color .15s;}
+        .tb-back:hover{color:var(--fg);}
+        .tb-back svg{width:.9rem;height:.9rem;}
+        .tb-sep{color:var(--dim);margin:0 .25rem;}
+        .tb-right{margin-left:auto;display:flex;align-items:center;gap:.65rem;}
+        .badge{font-family:'JetBrains Mono',monospace;font-size:.65rem;padding:.2rem .5rem;border-radius:20px;border:1px solid;}
+        .badge-green{background:rgba(63,185,80,.1);color:var(--green);border-color:rgba(63,185,80,.2);}
+        .badge-blue{background:rgba(88,166,255,.1);color:var(--blue);border-color:rgba(88,166,255,.2);}
+
+        /* LAYOUT */
+        .layout{display:flex;flex:1;overflow:hidden;}
+
+        /* SIDEBAR */
+        .sidebar{width:220px;background:var(--bg1);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+        .sb-section{padding:.75rem .75rem .25rem;font-family:'JetBrains Mono',monospace;font-size:.63rem;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;}
+        .sb-item{display:flex;align-items:center;gap:.6rem;padding:.5rem .85rem;border-radius:var(--r);margin:.1rem .5rem;cursor:pointer;font-size:.84rem;color:var(--muted);transition:background .15s,color .15s;border:none;background:transparent;width:calc(100% - 1rem);text-align:left;}
+        .sb-item:hover{background:var(--bg2);color:var(--fg);}
+        .sb-item.active{background:rgba(88,166,255,.12);color:var(--blue);}
+        .sb-item svg{width:1rem;height:1rem;flex-shrink:0;}
+        .sb-count{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:.65rem;background:var(--bg2);padding:.1rem .42rem;border-radius:10px;color:var(--dim);}
+
+        /* MAIN */
+        .main{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+
+        /* HEADER */
+        .pg-header{padding:1.25rem 1.5rem .75rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;flex-shrink:0;}
+        .pg-header h1{font-size:1.1rem;font-weight:600;}
+        .pg-header .sub{font-size:.8rem;color:var(--muted);margin-top:.15rem;}
+        .pg-actions{display:flex;gap:.5rem;align-items:center;}
+        .btn-sm{padding:.35rem .85rem;border-radius:var(--r);font-size:.8rem;font-weight:500;cursor:pointer;border:1px solid;transition:background .15s,border-color .15s;}
+        .btn-primary{background:var(--green);color:#000;border-color:var(--green);}
+        .btn-primary:hover{background:#4ccc5e;}
+        .btn-ghost{background:transparent;color:var(--fg);border-color:var(--border);}
+        .btn-ghost:hover{background:var(--bg2);}
+
+        /* KPI CARDS */
+        .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;padding:1rem 1.5rem;}
+        .kpi{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);padding:.9rem 1rem;}
+        .kpi-val{font-size:1.6rem;font-weight:700;line-height:1;margin-bottom:.3rem;}
+        .kpi-lbl{font-size:.72rem;color:var(--muted);}
+        .kpi-delta{font-size:.7rem;margin-top:.3rem;}
+        .delta-up{color:var(--green);}
+        .delta-dn{color:var(--coral);}
+
+        /* TABLE AREA */
+        .section-body{padding:0 1.5rem 1.5rem;}
+        .section-title{font-size:.82rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;margin-top:1.25rem;display:flex;align-items:center;justify-content:space-between;}
+        .filter-bar{display:flex;gap:.5rem;margin-bottom:.85rem;flex-wrap:wrap;}
+        .filter-btn{padding:.28rem .7rem;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.75rem;cursor:pointer;transition:all .15s;}
+        .filter-btn:hover,.filter-btn.active{background:rgba(88,166,255,.12);border-color:rgba(88,166,255,.35);color:var(--blue);}
+        .search-box{padding:.28rem .75rem;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);color:var(--fg);font-size:.78rem;width:200px;outline:none;}
+        .search-box::placeholder{color:var(--dim);}
+        .search-box:focus{border-color:var(--blue);}
+
+        /* TABLE */
+        .table-wrap{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+        table{width:100%;border-collapse:collapse;}
+        th{padding:.55rem 1rem;font-size:.73rem;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:left;border-bottom:1px solid var(--border);background:var(--bg2);white-space:nowrap;}
+        td{padding:.6rem 1rem;font-size:.82rem;border-bottom:1px solid rgba(48,54,61,.6);vertical-align:middle;}
+        tr:last-child td{border-bottom:none;}
+        tr.data-row{cursor:pointer;transition:background .12s;}
+        tr.data-row:hover{background:rgba(88,166,255,.05);}
+        .status-pill{display:inline-flex;align-items:center;gap:.3rem;padding:.18rem .55rem;border-radius:20px;font-size:.7rem;font-weight:500;}
+        .st-active{background:rgba(63,185,80,.12);color:var(--green);}
+        .st-pending{background:rgba(210,153,34,.12);color:var(--gold);}
+        .st-closed{background:rgba(72,79,88,.2);color:var(--muted);}
+        .st-review{background:rgba(88,166,255,.12);color:var(--blue);}
+        .mono{font-family:'JetBrains Mono',monospace;font-size:.75rem;}
+        .claim-id{color:var(--blue);font-family:'JetBrains Mono',monospace;font-size:.75rem;}
+
+        /* DETAIL PANEL */
+        .detail-panel{position:fixed;top:0;right:0;width:520px;height:100vh;background:var(--bg1);border-left:1px solid var(--border);z-index:100;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.22,.68,0,1.1);}
+        .detail-panel.open{transform:translateX(0);}
+        .dp-header{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;flex-shrink:0;}
+        .dp-close{background:transparent;border:none;color:var(--muted);cursor:pointer;padding:.25rem;border-radius:4px;transition:color .15s;}
+        .dp-close:hover{color:var(--fg);}
+        .dp-close svg{width:1.1rem;height:1.1rem;}
+        .dp-title{font-size:.95rem;font-weight:600;flex:1;}
+        .dp-body{flex:1;overflow-y:auto;padding:1.25rem;}
+        .dp-section{margin-bottom:1.5rem;}
+        .dp-sec-title{font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;padding-bottom:.45rem;border-bottom:1px solid var(--border);}
+        .dp-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+        .dp-field{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:.6rem .8rem;}
+        .dp-field label{font-size:.67rem;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:.2rem;}
+        .dp-field span{font-size:.82rem;color:var(--fg);}
+        .dp-field span.val-green{color:var(--green);}
+        .dp-field span.val-blue{color:var(--blue);}
+        .dp-field span.val-gold{color:var(--gold);}
+        .room-tag{display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .6rem;border-radius:4px;font-size:.72rem;margin:.2rem;border:1px solid var(--border);background:var(--bg2);}
+        .ai-box{background:linear-gradient(135deg,rgba(63,185,80,.06),rgba(88,166,255,.06));border:1px solid rgba(63,185,80,.2);border-radius:var(--r);padding:.85rem 1rem;}
+        .ai-label{font-size:.67rem;color:var(--green);font-family:'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.45rem;}
+        .ai-row{display:flex;align-items:center;justify-content:space-between;font-size:.78rem;padding:.22rem 0;border-bottom:1px solid rgba(48,54,61,.5);}
+        .ai-row:last-child{border-bottom:none;}
+        .ai-found{color:var(--green);}.ai-partial{color:var(--gold);}.ai-missing{color:var(--coral);}
+        .progress-bar{height:5px;background:var(--bg2);border-radius:3px;overflow:hidden;margin-top:.35rem;}
+        .progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green),var(--blue));}
+        .celery-log{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:.65rem .85rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:1.8;}
+        .cl-ok{color:var(--green);}.cl-info{color:var(--blue);}.cl-warn{color:var(--gold);}
+        .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:99;opacity:0;pointer-events:none;transition:opacity .3s;}
+        .overlay.show{opacity:1;pointer-events:all;}
+
+        @media(max-width:900px){.sidebar{display:none;}.kpi-row{grid-template-columns:repeat(3,1fr);}.detail-panel{width:100%;}}
+        @media(max-width:640px){.kpi-row{grid-template-columns:repeat(2,1fr);}.pg-actions{width:100%;}}
+    </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+    <a class="tb-back" href="../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+        Portfolio
+    </a>
+    <span class="tb-sep">·</span>
+    <span class="tb-logo">CLAIMETAPP</span>
+    <span style="font-size:.78rem;color:var(--muted);">Water Mitigation Claims Platform</span>
+    <div class="tb-right">
+        <span class="badge badge-green">● Live System</span>
+        <span class="badge badge-blue">Django 4.2</span>
+        <a href="https://claimetapp.com/portfolio/" target="_blank" rel="noopener" class="btn-sm btn-ghost" style="font-size:.72rem;">claimetapp.com →</a>
+    </div>
+</div>
+
+<div class="layout">
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div style="padding:.85rem .85rem .5rem;"><span style="font-size:.8rem;font-weight:600;">All Phase Consulting</span><br><span style="font-size:.72rem;color:var(--muted);">admin@allphase.com</span></div>
+    <div class="sb-section">Claims</div>
+    <button class="sb-item active" onclick="setView('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard<span class="sb-count">24</span>
+    </button>
+    <button class="sb-item" onclick="setView('claims')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+        All Claims<span class="sb-count">24</span>
+    </button>
+    <button class="sb-item" onclick="setView('active')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+        Active<span class="sb-count">11</span>
+    </button>
+    <div class="sb-section">Tools</div>
+    <button class="sb-item" onclick="setView('sensor')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Sensor Renamer
+    </button>
+    <button class="sb-item" onclick="setView('equip')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,11 12,14 22,4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        Equipment Checker
+    </button>
+    <button class="sb-item" onclick="setView('moisture')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>
+        Moisture Browser
+    </button>
+    <div class="sb-section">Finance</div>
+    <button class="sb-item" onclick="setView('ale')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        ALE Leases<span class="sb-count">7</span>
+    </button>
+    <div class="sb-section">System</div>
+    <button class="sb-item" onclick="setView('celery')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        Celery Tasks
+    </button>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="main-content">
+    <!-- DASHBOARD VIEW -->
+    <div id="view-dashboard">
+        <div class="pg-header">
+            <div><h1>Dashboard</h1><div class="sub">All Phase Consulting — Water Mitigation Platform</div></div>
+            <div class="pg-actions">
+                <button class="btn-sm btn-ghost" onclick="showClaim(claims[0])">+ New Claim</button>
+                <button class="btn-sm btn-primary" onclick="alert('Encircle sync triggered — 3 claims updated')">↻ Sync Encircle</button>
+            </div>
+        </div>
+        <div class="kpi-row">
+            <div class="kpi"><div class="kpi-val" style="color:var(--blue)">24</div><div class="kpi-lbl">Total Claims</div><div class="kpi-delta delta-up">↑ 3 this week</div></div>
+            <div class="kpi"><div class="kpi-val" style="color:var(--green)">11</div><div class="kpi-lbl">Active Claims</div><div class="kpi-delta delta-up">↑ 2 this week</div></div>
+            <div class="kpi"><div class="kpi-val" style="color:var(--gold)">7</div><div class="kpi-lbl">ALE Leases Open</div><div class="kpi-delta">↔ No change</div></div>
+            <div class="kpi"><div class="kpi-val" style="color:var(--coral)">4</div><div class="kpi-lbl">Awaiting Review</div><div class="kpi-delta delta-dn">↑ 1 today</div></div>
+            <div class="kpi"><div class="kpi-val" style="color:var(--purple)">$284k</div><div class="kpi-lbl">Claim Value</div><div class="kpi-delta delta-up">↑ $42k MTD</div></div>
+        </div>
+        <div class="section-body">
+            <div class="section-title">Recent Claims<span style="font-weight:400;font-size:.75rem;color:var(--muted);cursor:pointer" onclick="setView('claims')">View all →</span></div>
+            <div id="claims-table-wrapper"></div>
+        </div>
+    </div>
+
+    <!-- CLAIMS VIEW -->
+    <div id="view-claims" style="display:none;">
+        <div class="pg-header">
+            <div><h1>All Claims</h1><div class="sub">24 total · 11 active · Django ORM + PostgreSQL</div></div>
+            <div class="pg-actions"><button class="btn-sm btn-primary">+ New Claim</button></div>
+        </div>
+        <div class="section-body" style="padding-top:1rem;">
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filterClaims('all',this)">All (24)</button>
+                <button class="filter-btn" onclick="filterClaims('active',this)">Active (11)</button>
+                <button class="filter-btn" onclick="filterClaims('pending',this)">Pending (6)</button>
+                <button class="filter-btn" onclick="filterClaims('review',this)">In Review (4)</button>
+                <button class="filter-btn" onclick="filterClaims('closed',this)">Closed (3)</button>
+                <input class="search-box" placeholder="Search claims…" oninput="searchClaims(this.value)">
+            </div>
+            <div id="claims-table-full"></div>
+        </div>
+    </div>
+
+    <!-- SENSOR VIEW -->
+    <div id="view-sensor" style="display:none;">
+        <div class="pg-header"><div><h1>AI Sensor Image Renamer</h1><div class="sub">Claude Vision API · Parallel ThreadPoolExecutor · Auto-sort to subfolders</div></div></div>
+        <div class="section-body" style="padding-top:1.25rem;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+                <div class="kpi"><div class="kpi-val" style="color:var(--blue)">48</div><div class="kpi-lbl">Images Processed</div></div>
+                <div class="kpi"><div class="kpi-val" style="color:var(--green)">44</div><div class="kpi-lbl">Successfully Renamed</div></div>
+                <div class="kpi"><div class="kpi-val" style="color:var(--gold)">4</div><div class="kpi-lbl">Manual Review Queue</div></div>
+                <div class="kpi"><div class="kpi-val" style="color:var(--purple)">4×</div><div class="kpi-lbl">Concurrent API Calls</div></div>
+            </div>
+            <div class="table-wrap" style="margin-bottom:1rem;">
+                <table>
+                    <thead><tr><th>Original Filename</th><th>Renamed To</th><th>Subfolder</th><th>Status</th></tr></thead>
+                    <tbody>
+                        <tr><td class="mono">IMG_4823.jpg</td><td class="mono" style="color:var(--green)">RH65.3_T22.1_GPP450.7.jpg</td><td><span class="status-pill st-review">RH_T_GPP/</span></td><td><span class="status-pill st-active">✓ Renamed</span></td></tr>
+                        <tr><td class="mono">IMG_4824.jpg</td><td class="mono" style="color:var(--green)">MC19.5.jpg</td><td><span class="status-pill st-pending">MC/</span></td><td><span class="status-pill st-active">✓ Renamed</span></td></tr>
+                        <tr><td class="mono">IMG_4825.jpg</td><td class="mono" style="color:var(--gold)">RH71.2_TNAUNA_GPPNA.jpg</td><td><span class="status-pill st-review">RH_T_GPP/</span></td><td><span class="status-pill st-pending">⚠ Partial — Review</span></td></tr>
+                        <tr><td class="mono">IMG_4826.jpg</td><td class="mono" style="color:var(--green)">MC24.8.jpg</td><td><span class="status-pill st-pending">MC/</span></td><td><span class="status-pill st-active">✓ Renamed</span></td></tr>
+                        <tr><td class="mono">IMG_4827.jpg</td><td class="mono" style="color:var(--green)">RH58.9_T19.4_GPP380.2.jpg</td><td><span class="status-pill st-review">RH_T_GPP/</span></td><td><span class="status-pill st-active">✓ Renamed</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="display:flex;gap:.5rem;"><button class="btn-sm btn-primary" onclick="alert('ZIP download triggered for RH_T_GPP/ subfolder')">⬇ Download RH_T_GPP ZIP</button><button class="btn-sm btn-ghost" onclick="alert('ZIP download triggered for MC/ subfolder')">⬇ Download MC ZIP</button><button class="btn-sm btn-ghost" onclick="alert('Opening manual correction panel…')">✎ Correct NA Values</button></div>
+        </div>
+    </div>
+
+    <!-- EQUIPMENT CHECKER VIEW -->
+    <div id="view-equip" style="display:none;">
+        <div class="pg-header"><div><h1>Equipment Documentation Checker</h1><div class="sub">Claude Vision cross-references job photos against HUTCH EQPT LIST · Export CSV</div></div></div>
+        <div class="section-body" style="padding-top:1.25rem;">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1rem;">
+                <div class="kpi"><div class="kpi-val" style="color:var(--green)">14</div><div class="kpi-lbl">FOUND</div></div>
+                <div class="kpi"><div class="kpi-val" style="color:var(--gold)">4</div><div class="kpi-lbl">PARTIAL</div></div>
+                <div class="kpi"><div class="kpi-val" style="color:var(--coral)">3</div><div class="kpi-lbl">NOT FOUND</div></div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Room</th><th>Equipment Item</th><th>AI Status</th><th>Notes</th></tr></thead>
+                    <tbody>
+                        <tr><td>Bedroom 1</td><td>Dri-Eaz LGR 3500i Dehumidifier</td><td><span class="status-pill st-active">FOUND</span></td><td style="color:var(--muted);font-size:.78rem;">Serial visible in photo 3</td></tr>
+                        <tr><td>Bathroom</td><td>B-Air HEPA Air Scrubber</td><td><span class="status-pill st-active">FOUND</span></td><td style="color:var(--muted);font-size:.78rem;">Confirmed by logo + model sticker</td></tr>
+                        <tr><td>Living Room</td><td>Dri-Eaz Velo Pro Axial Fan</td><td><span class="status-pill st-pending">PARTIAL</span></td><td style="color:var(--muted);font-size:.78rem;">Fan visible, serial obscured</td></tr>
+                        <tr><td>Hallway</td><td>Injectidry HP60 Panel System</td><td><span class="status-pill" style="background:rgba(248,81,73,.12);color:var(--coral);">NOT FOUND</span></td><td style="color:var(--muted);font-size:.78rem;">No matching image in report</td></tr>
+                        <tr><td>Basement</td><td>Phoenix R175 Dehumidifier</td><td><span class="status-pill st-active">FOUND</span></td><td style="color:var(--muted);font-size:.78rem;">Clear match in photo 7</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="margin-top:.75rem;display:flex;gap:.5rem;"><button class="btn-sm btn-primary" onclick="alert('Exporting results to CSV…')">⬇ Export CSV</button><button class="btn-sm btn-ghost" onclick="alert('Generating summary report…')">📄 Generate Report</button></div>
+        </div>
+    </div>
+
+    <!-- ALE VIEW -->
+    <div id="view-ale" style="display:none;">
+        <div class="pg-header"><div><h1>ALE Lease Manager</h1><div class="sub">Full lease pipeline · Draft → Signed → Completed · Email-triggered status updates</div></div><div class="pg-actions"><button class="btn-sm btn-primary">+ New Lease</button></div></div>
+        <div class="section-body" style="padding-top:1rem;">
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Claim ID</th><th>Insured Name</th><th>Lease Type</th><th>Monthly</th><th>Stage</th><th>Assigned</th><th>Actions</th></tr></thead>
+                    <tbody>
+                        <tr><td class="claim-id">CLM-0041</td><td>Martinez, Rosa</td><td style="color:var(--muted)">Month-to-month</td><td style="color:var(--green)">$2,850</td><td><span class="status-pill st-active">Signed</span></td><td style="color:var(--muted)">J. Williams</td><td><button class="btn-sm btn-ghost" style="padding:.2rem .55rem;font-size:.72rem;" onclick="alert('Opening lease PDF…')">View PDF</button></td></tr>
+                        <tr><td class="claim-id">CLM-0038</td><td>Thompson, David</td><td style="color:var(--muted)">Term sheet</td><td style="color:var(--green)">$3,200</td><td><span class="status-pill st-pending">Draft</span></td><td style="color:var(--muted)">K. Patel</td><td><button class="btn-sm btn-ghost" style="padding:.2rem .55rem;font-size:.72rem;" onclick="alert('Opening lease editor…')">Edit</button></td></tr>
+                        <tr><td class="claim-id">CLM-0035</td><td>Garcia, Elena</td><td style="color:var(--muted)">Engagement agreement</td><td style="color:var(--green)">$4,100</td><td><span class="status-pill st-review">In Review</span></td><td style="color:var(--muted)">M. Chen</td><td><button class="btn-sm btn-ghost" style="padding:.2rem .55rem;font-size:.72rem;" onclick="alert('Sending to insured for signature…')">Send</button></td></tr>
+                        <tr><td class="claim-id">CLM-0031</td><td>Walker, James</td><td style="color:var(--muted)">Invoice</td><td style="color:var(--green)">$1,950</td><td><span class="status-pill st-closed">Completed</span></td><td style="color:var(--muted)">J. Williams</td><td><button class="btn-sm btn-ghost" style="padding:.2rem .55rem;font-size:.72rem;" onclick="alert('Downloading completed lease archive…')">Archive</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- CELERY VIEW -->
+    <div id="view-celery" style="display:none;">
+        <div class="pg-header"><div><h1>Celery Task Monitor</h1><div class="sub">Redis broker · django-celery-beat cron · 40+ registered tasks</div></div><div class="pg-actions"><button class="btn-sm btn-ghost" onclick="refreshCelery()">↻ Refresh</button></div></div>
+        <div class="section-body" style="padding-top:1rem;">
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1rem;">
+                <div class="kpi"><div class="kpi-val" style="color:var(--green)">38</div><div class="kpi-lbl">Succeeded (24h)</div></div>
+                <div class="kpi"><div class="kpi-val" style="color:var(--blue)">3</div><div class="kpi-lbl">Running</div></div>
+                <div class="kpi"><div class="kpi-val" style="color:var(--gold)">2</div><div class="kpi-lbl">Queued</div></div>
+                <div class="kpi"><div class="kpi-val" style="color:var(--coral)">1</div><div class="kpi-lbl">Failed (retry)</div></div>
+            </div>
+            <div class="table-wrap" style="margin-bottom:1rem;">
+                <table>
+                    <thead><tr><th>Task</th><th>State</th><th>Runtime</th><th>Triggered</th></tr></thead>
+                    <tbody>
+                        <tr><td class="mono" style="font-size:.73rem;">claims.tasks.sync_encircle_claim</td><td><span class="status-pill st-active">SUCCESS</span></td><td class="mono">1.24s</td><td style="color:var(--muted)">2 min ago</td></tr>
+                        <tr><td class="mono" style="font-size:.73rem;">documents.tasks.generate_label_pdf</td><td><span class="status-pill st-active">SUCCESS</span></td><td class="mono">3.87s</td><td style="color:var(--muted)">5 min ago</td></tr>
+                        <tr><td class="mono" style="font-size:.73rem;">emails.tasks.send_scheduled_campaign</td><td><span class="status-pill st-review">RUNNING</span></td><td class="mono">0.44s…</td><td style="color:var(--muted)">Now</td></tr>
+                        <tr><td class="mono" style="font-size:.73rem;">sensor.tasks.process_image_batch</td><td><span class="status-pill st-pending">QUEUED</span></td><td class="mono">—</td><td style="color:var(--muted)">Scheduled</td></tr>
+                        <tr><td class="mono" style="font-size:.73rem;">documents.tasks.batch_regen_scope</td><td><span class="status-pill" style="background:rgba(248,81,73,.12);color:var(--coral)">RETRY</span></td><td class="mono">timeout</td><td style="color:var(--muted)">15 min ago</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="celery-log">
+                <div><span class="cl-ok">[SUCCESS]</span> 14:32:11 — sync_encircle_claim(claim_id=CLM-0041) → 3 rooms pushed</div>
+                <div><span class="cl-ok">[SUCCESS]</span> 14:31:44 — generate_label_pdf(claim_id=CLM-0039) → 14 labels queued for print</div>
+                <div><span class="cl-info">[RUNNING]</span> 14:34:02 — send_scheduled_campaign(campaign_id=42) → 0/180 sent…</div>
+                <div><span class="cl-warn">[RETRY 1/3]</span> 14:19:55 — batch_regen_scope → TimeoutError: LibreOffice UNO unresponsive</div>
+                <div><span class="cl-ok">[SUCCESS]</span> 14:18:30 — encircle_webhook_handler(event=claim.updated) → parsed OK</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOISTURE VIEW -->
+    <div id="view-moisture" style="display:none;">
+        <div class="pg-header"><div><h1>Moisture Readings Browser</h1><div class="sub">Upload sensor photos · Auto-extract RH/T/GPP/MC values from filenames · Export CSV</div></div></div>
+        <div class="section-body" style="padding-top:1rem;">
+            <div class="filter-bar">
+                <button class="filter-btn active">All Readings (48)</button>
+                <button class="filter-btn">RH/T/GPP (32)</button>
+                <button class="filter-btn">MC (16)</button>
+                <input class="search-box" placeholder="Filter by room or value…">
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Room</th><th>Filename</th><th>RH %</th><th>Temp °C</th><th>GPP</th><th>MC %</th><th>Day</th></tr></thead>
+                    <tbody>
+                        <tr><td>Bedroom 1</td><td class="mono" style="font-size:.71rem;color:var(--muted)">RH65.3_T22.1_GPP450.7.jpg</td><td style="color:var(--coral)">65.3</td><td>22.1</td><td>450.7</td><td>—</td><td>3</td></tr>
+                        <tr><td>Bathroom</td><td class="mono" style="font-size:.71rem;color:var(--muted)">MC19.5.jpg</td><td>—</td><td>—</td><td>—</td><td style="color:var(--green)">19.5</td><td>3</td></tr>
+                        <tr><td>Living Rm</td><td class="mono" style="font-size:.71rem;color:var(--muted)">RH58.9_T19.4_GPP380.2.jpg</td><td style="color:var(--gold)">58.9</td><td>19.4</td><td>380.2</td><td>—</td><td>4</td></tr>
+                        <tr><td>Hallway</td><td class="mono" style="font-size:.71rem;color:var(--muted)">MC24.8.jpg</td><td>—</td><td>—</td><td>—</td><td style="color:var(--gold)">24.8</td><td>4</td></tr>
+                        <tr><td>Bedroom 2</td><td class="mono" style="font-size:.71rem;color:var(--muted)">RH51.2_T21.0_GPP340.1.jpg</td><td style="color:var(--green)">51.2</td><td>21.0</td><td>340.1</td><td>—</td><td>5</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="margin-top:.75rem;"><button class="btn-sm btn-primary" onclick="alert('Exporting readings to CSV…')">⬇ Export All CSV</button></div>
+        </div>
+    </div>
+</div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- CLAIM DETAIL PANEL -->
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+<div class="detail-panel" id="detail-panel">
+    <div class="dp-header">
+        <button class="dp-close" onclick="closePanel()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <div class="dp-title" id="dp-title">Claim Details</div>
+        <span class="badge badge-green" id="dp-status-badge">Active</span>
+    </div>
+    <div class="dp-body" id="dp-body"></div>
+</div>
+
+<script>
+const claims = [
+    {id:'CLM-0041',owner:'Martinez, Rosa',address:'2847 Maple St, Los Angeles CA',ins:'State Farm #SF-8821-A',adjuster:'J. Williams',status:'active',val:'$28,400',rooms:['Kitchen','Living Room','Bedroom 1','Bedroom 2','Bathroom','Hallway','Crawlspace'],phase:'Drying — Day 4',progress:62,celery:['sync_encircle','generate_labels','send_notification'],aleStage:'Signed — $2,850/mo'},
+    {id:'CLM-0039',owner:'Johnson, Marcus',address:'1192 Oak Ave, Culver City CA',ins:'Allstate #AS-44201',adjuster:'K. Patel',status:'pending',val:'$41,200',rooms:['Master Bath','Guest Bath','Downstairs Hall','Garage'],phase:'Inspection Scheduled',progress:15,celery:['sync_encircle'],aleStage:'Draft pending'},
+    {id:'CLM-0038',owner:'Thompson, David',address:'5501 Venice Blvd, LA CA',ins:'Farmers #FA-9943',adjuster:'K. Patel',status:'review',val:'$19,800',rooms:['Bathroom 1','Bathroom 2','Laundry Room'],phase:'Document Review',progress:40,celery:['generate_scope_pdf','batch_regen_scope'],aleStage:'Term sheet — under review'},
+    {id:'CLM-0035',owner:'Garcia, Elena',address:'334 Pico Blvd, Santa Monica CA',ins:'USAA #UA-71128',adjuster:'M. Chen',status:'active',val:'$52,700',rooms:['Entire Ground Floor','Basement','Utility Room','2x Bedroom'],phase:'Drying — Day 7',progress:78,celery:['sync_encircle','send_ale_invoice'],aleStage:'Engagement agreement — $4,100/mo'},
+    {id:'CLM-0031',owner:'Walker, James',address:'789 Sunset Dr, Burbank CA',ins:'Liberty Mutual #LM-2291',adjuster:'J. Williams',status:'closed',val:'$11,900',rooms:['Kitchen','Dining Area'],phase:'Completed',progress:100,celery:[],aleStage:'Invoice paid — closed'},
+    {id:'CLM-0028',owner:'Lee, Sandra',address:'451 Colorado Blvd, Pasadena CA',ins:'Progressive #PG-3345',adjuster:'M. Chen',status:'active',val:'$33,150',rooms:['Master Bedroom','Walk-in Closet','Hallway','2nd Bathroom'],phase:'Drying — Day 2',progress:22,celery:['sync_encircle','generate_labels'],aleStage:'Draft — $3,200/mo'},
+];
+
+let filteredClaims = [...claims];
+let currentFilter = 'all';
+
+function renderTable(data, containerId){
+    const w=document.getElementById(containerId);if(!w)return;
+    w.innerHTML=`<div class="table-wrap"><table>
+    <thead><tr><th>Claim ID</th><th>Owner</th><th>Address</th><th>Status</th><th>Value</th><th>Phase</th></tr></thead>
+    <tbody>${data.map(c=>`<tr class="data-row" onclick="showClaim(${JSON.stringify(c).replace(/"/g,'&quot;')})">
+        <td class="claim-id">${c.id}</td>
+        <td>${c.owner}</td>
+        <td style="color:var(--muted);font-size:.78rem">${c.address}</td>
+        <td><span class="status-pill ${c.status==='active'?'st-active':c.status==='pending'?'st-pending':c.status==='review'?'st-review':'st-closed'}">${c.status.charAt(0).toUpperCase()+c.status.slice(1)}</span></td>
+        <td style="color:var(--green)">${c.val}</td>
+        <td style="color:var(--muted);font-size:.78rem">${c.phase}</td>
+    </tr>`).join('')}</tbody></table></div>`;
+}
+
+function showClaim(c){
+    document.getElementById('dp-title').textContent=c.id+' — '+c.owner;
+    document.getElementById('dp-status-badge').textContent=c.status.charAt(0).toUpperCase()+c.status.slice(1);
+    const b=document.getElementById('dp-body');
+    b.innerHTML=`
+    <div class="dp-section">
+        <div class="dp-sec-title">Property & Insurance</div>
+        <div class="dp-grid">
+            <div class="dp-field"><label>Owner</label><span>${c.owner}</span></div>
+            <div class="dp-field"><label>Claim ID</label><span class="val-blue">${c.id}</span></div>
+            <div class="dp-field" style="grid-column:1/-1"><label>Address</label><span>${c.address}</span></div>
+            <div class="dp-field"><label>Insurance</label><span>${c.ins}</span></div>
+            <div class="dp-field"><label>Adjuster</label><span>${c.adjuster}</span></div>
+            <div class="dp-field"><label>Claim Value</label><span class="val-green">${c.val}</span></div>
+            <div class="dp-field"><label>ALE Lease</label><span class="val-gold">${c.aleStage}</span></div>
+        </div>
+    </div>
+    <div class="dp-section">
+        <div class="dp-sec-title">Drying Progress — ${c.phase}</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${c.progress}%"></div></div>
+        <div style="font-size:.75rem;color:var(--muted);margin-top:.35rem">${c.progress}% complete</div>
+    </div>
+    <div class="dp-section">
+        <div class="dp-sec-title">Rooms (${c.rooms.length})</div>
+        <div>${c.rooms.map(r=>`<span class="room-tag">${r}</span>`).join('')}</div>
+    </div>
+    <div class="dp-section">
+        <div class="dp-sec-title">AI Equipment Check — Claude Vision</div>
+        <div class="ai-box">
+            <div class="ai-label">Claude Vision API · Equipment Verification</div>
+            <div class="ai-row"><span>Dri-Eaz LGR 3500i</span><span class="ai-found">FOUND</span></div>
+            <div class="ai-row"><span>B-Air HEPA Scrubber</span><span class="ai-found">FOUND</span></div>
+            <div class="ai-row"><span>Injectidry HP60</span><span class="ai-partial">PARTIAL</span></div>
+            <div class="ai-row"><span>Phoenix R175 Dehumidifier</span><span class="ai-found">FOUND</span></div>
+        </div>
+    </div>
+    ${c.celery.length?`<div class="dp-section">
+        <div class="dp-sec-title">Active Celery Tasks</div>
+        <div class="celery-log">${c.celery.map(t=>`<div><span class="cl-info">[QUEUED]</span> claims.tasks.${t}(claim_id=${c.id})</div>`).join('')}</div>
+    </div>`:''}
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;padding-top:.5rem;">
+        <button class="btn-sm btn-primary" onclick="alert('Generating scope PDF + labels for ${c.id}…')">Generate Documents</button>
+        <button class="btn-sm btn-ghost" onclick="alert('Pushing ${c.id} to Encircle…')">Sync Encircle</button>
+        <button class="btn-sm btn-ghost" onclick="alert('Sending status email for ${c.id}…')">Send Email</button>
+    </div>`;
+    document.getElementById('detail-panel').classList.add('open');
+    document.getElementById('overlay').classList.add('show');
+}
+
+function closePanel(){document.getElementById('detail-panel').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+
+function setView(v){
+    document.querySelectorAll('[id^="view-"]').forEach(el=>el.style.display='none');
+    document.querySelectorAll('.sb-item').forEach(el=>el.classList.remove('active'));
+    const el=document.getElementById('view-'+v);if(el)el.style.display='block';
+    event&&event.target&&event.target.closest&&event.target.closest('.sb-item')&&event.target.closest('.sb-item').classList.add('active');
+    if(v==='dashboard'||v==='claims'){renderTable(claims,'claims-table-wrapper');renderTable(claims,'claims-table-full');}
+}
+
+function filterClaims(f,btn){
+    currentFilter=f;
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    filteredClaims=f==='all'?[...claims]:claims.filter(c=>c.status===f);
+    renderTable(filteredClaims,'claims-table-full');
+}
+
+function searchClaims(q){
+    const s=q.toLowerCase();
+    const base=currentFilter==='all'?claims:claims.filter(c=>c.status===currentFilter);
+    filteredClaims=base.filter(c=>c.id.toLowerCase().includes(s)||c.owner.toLowerCase().includes(s)||c.address.toLowerCase().includes(s));
+    renderTable(filteredClaims,'claims-table-full');
+}
+
+function refreshCelery(){alert('Celery task list refreshed from Redis broker.');}
+
+// Init
+renderTable(claims,'claims-table-wrapper');
+renderTable(claims,'claims-table-full');
+</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Dream Village — YA1 Creative</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>*{margin:0;padding:0;box-sizing:border-box;}:root{--bg:#030507;--bg2:#0b1118;--fg:#eef2f7;--muted:rgba(238,242,247,.52);--green:#00e87a;--gd:rgba(0,232,122,.12);--blue:#38bdf8;--border:rgba(238,242,247,.07);}body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;min-height:100vh;}
+.topbar{padding:.85rem 2rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid var(--border);}
+.tb-back{font-size:.78rem;color:var(--muted);text-decoration:none;font-family:'JetBrains Mono',monospace;transition:color .2s;}.tb-back:hover{color:var(--green);}
+.content{max-width:920px;margin:0 auto;padding:3.5rem 2rem;}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--green);letter-spacing:.16em;text-transform:uppercase;margin-bottom:1.1rem;display:flex;align-items:center;gap:.7rem;}
+.eyebrow::before{content:'';display:block;width:1.5rem;height:1px;background:var(--green);}
+h1{font-family:'Syne',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.03em;margin-bottom:1rem;line-height:1.02;}
+.lead{font-size:1.05rem;color:var(--muted);line-height:1.72;max-width:640px;margin-bottom:2.5rem;}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2.5rem;}
+.chip{font-family:'JetBrains Mono',monospace;font-size:.65rem;padding:.22rem .65rem;border:1px solid var(--border);border-radius:2px;color:var(--muted);}
+.code-block{background:var(--bg2);border:1px solid rgba(238,242,247,.09);border-radius:.85rem;overflow:hidden;margin-bottom:1.5rem;}
+.cb-bar{padding:.65rem 1rem;background:rgba(255,255,255,.025);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:.4rem;}
+.dot{width:.62rem;height:.62rem;border-radius:50%;}.dr{background:#ff5f57;}.dy{background:#febc2e;}.dg{background:#28c840;}
+.cb-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:rgba(238,242,247,.28);margin-left:.5rem;}
+.cb-body{padding:1.25rem 1.5rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.85;}
+.kw{color:#c792ea;}.fn{color:#82aaff;}.st{color:#c3e88d;}.cm{color:rgba(238,242,247,.28);}.nm{color:#f78c6c;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:1.75rem;}
+.feat-card{padding:1.35rem;background:rgba(255,255,255,.018);border:1px solid var(--border);border-radius:.85rem;}
+.feat-card h4{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.5rem;}
+.feat-card p{font-size:.85rem;color:var(--muted);line-height:1.6;}
+</style></head><body>
+<div class="topbar"><a class="tb-back" href="../index.html">← Portfolio</a><span style="color:var(--muted);font-size:.75rem;font-family:'JetBrains Mono',monospace;">/ dream-village</span></div>
+<div class="content">
+<div class="eyebrow">Web3 · Metaverse · Node.js</div>
+<h1>Dream <span style="color:var(--green)">Village</span></h1>
+<p class="lead">A gamified metaverse village-building platform with a fully on-chain referral economy. Villagers register crypto wallets, earn LTC commissions through BTCPay Server pull-payments, and gameplay events are secured with HMAC-SHA256 webhook signatures.</p>
+<div class="chips"><span class="chip">Node.js</span><span class="chip">MySQL 2 (pool)</span><span class="chip">BTCPay Server</span><span class="chip">LTC On-Chain</span><span class="chip">Crypto HMAC-SHA256</span><span class="chip">React + Vite</span><span class="chip">Axios</span><span class="chip">dotenv</span></div>
+<div class="code-block">
+    <div class="cb-bar"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span><span class="cb-title">villagerModel.js — Referral Payout Engine</span></div>
+    <div class="cb-body">
+        <div><span class="cm">// Generate HMAC-signed referral code + register wallet</span></div>
+        <div><span class="kw">async function</span> <span class="fn">registerVillager</span>(userId, ltcAddress) {</div>
+        <div>&nbsp;&nbsp;<span class="kw">const</span> refCode = <span class="fn">generateReferralCode</span>(); <span class="cm">// crypto.randomBytes(10).hex</span></div>
+        <div>&nbsp;&nbsp;<span class="kw">await</span> pool.<span class="fn">query</span>(<span class="st">'INSERT INTO villagers SET ?'</span>, [{</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;user_id: userId, referral_code: refCode,</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;ltc_address: ltcAddress, created_at: <span class="kw">new</span> <span class="fn">Date</span>()</div>
+        <div>&nbsp;&nbsp;}]);</div>
+        <div>&nbsp;&nbsp;<span class="kw">return</span> { refCode, ltcAddress };</div>
+        <div>}</div>
+        <br>
+        <div><span class="cm">// BTCPay pull-payment: auto-approve LTC commission</span></div>
+        <div><span class="kw">async function</span> <span class="fn">payCommission</span>(referrerId, amount) {</div>
+        <div>&nbsp;&nbsp;<span class="kw">const</span> { ltc_address } = <span class="kw">await</span> <span class="fn">getVillager</span>(referrerId);</div>
+        <div>&nbsp;&nbsp;<span class="kw">await</span> <span class="fn">payReferral</span>(ltc_address, amount); <span class="cm">// btcpay_referral_integration.js</span></div>
+        <div>&nbsp;&nbsp;<span class="kw">await</span> pool.<span class="fn">query</span>(<span class="st">'UPDATE villagers SET total_earned=total_earned+? WHERE id=?'</span>, [amount, referrerId]);</div>
+        <div>}</div>
+        <br>
+        <div><span class="cm">// HMAC webhook signature verification</span></div>
+        <div><span class="kw">function</span> <span class="fn">verifyBtcPaySignature</span>(rawBody, sigHeader, secret) {</div>
+        <div>&nbsp;&nbsp;<span class="kw">const</span> expected = <span class="st">`sha256=${</span>crypto.<span class="fn">createHmac</span>(<span class="st">'sha256'</span>, secret).<span class="fn">update</span>(rawBody).<span class="fn">digest</span>(<span class="st">'hex'</span>)<span class="st">}`</span>;</div>
+        <div>&nbsp;&nbsp;<span class="kw">return</span> crypto.<span class="fn">timingSafeEqual</span>(<span class="fn">Buffer.from</span>(sigHeader), <span class="fn">Buffer.from</span>(expected));</div>
+        <div>}</div>
+    </div>
+</div>
+<div class="grid2">
+    <div class="feat-card"><h4>On-Chain Referral Economy</h4><p>Every referral automatically triggers a BTCPay Server pull-payment payout in LTC. Auto-approved claims mean zero manual intervention for commission processing.</p></div>
+    <div class="feat-card"><h4>Connection Pool</h4><p>MySQL2 connection pool (10 concurrent) with promise wrappers ensures high-throughput game event writes without connection exhaustion under load.</p></div>
+    <div class="feat-card"><h4>Webhook Security</h4><p>All BTCPay Server webhooks are verified with HMAC-SHA256 and <code style="color:var(--green)">timingSafeEqual</code> to prevent timing attacks on signature validation.</p></div>
+    <div class="feat-card"><h4>React Frontend</h4><p>Vite-powered React app with village builder UI, real-time LTC balance display, referral code sharing, and leaderboard — all connected to the Node.js API.</p></div>
+</div>
+</div></body></html>
