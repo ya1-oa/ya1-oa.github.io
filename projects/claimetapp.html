@@ -116,9 +116,22 @@
 
         @media(max-width:900px){.sidebar{display:none;}.kpi-row{grid-template-columns:repeat(3,1fr);}.detail-panel{width:100%;}}
         @media(max-width:640px){.kpi-row{grid-template-columns:repeat(2,1fr);}.pg-actions{width:100%;}}
-    </style>
+    
+    nav{padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);}
+    .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:#00e87a;text-decoration:none;}
+    .back-link{font-size:.875rem;color:rgba(238,242,247,.5);display:flex;align-items:center;gap:.5rem;text-decoration:none;transition:color .2s;}
+    .back-link:hover{color:#00e87a;}
+    .back-link svg{width:16px;height:16px;}
+</style>
 </head>
 <body>
+<nav>
+  <a class="logo" href="../index.html" data-text="YA1">YA1</a>
+  <a class="back-link" href="../index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+    Back to Portfolio
+  </a>
+</nav>
 
 <!-- TOP BAR -->
 <div class="topbar">

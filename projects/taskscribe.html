@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskScribe — AI Transcription &amp; Task Pipeline · Yakir Yaacov</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+        :root{--bg:#0d1117;--bg1:#161b22;--bg2:#21262d;--fg:#e6edf3;--muted:#8b949e;--dim:#484f58;--green:#3fb950;--blue:#58a6ff;--coral:#f85149;--gold:#d29922;--purple:#bc8cff;--border:#30363d;--r:8px;}
+        body{background:var(--bg);color:var(--fg);font-family:'Inter',sans-serif;font-size:14px;-webkit-font-smoothing:antialiased;}
+        .topbar{height:44px;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.5rem;gap:1rem;position:sticky;top:0;z-index:100;}
+        .tb-logo{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:500;color:var(--blue);letter-spacing:.05em;}
+        .tb-back{font-size:.78rem;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:.35rem;transition:color .15s;}
+        .tb-back:hover{color:var(--fg);}
+        .tb-back svg{width:.9rem;height:.9rem;}
+        .tb-right{margin-left:auto;display:flex;align-items:center;gap:.65rem;}
+        .badge{font-family:'JetBrains Mono',monospace;font-size:.65rem;padding:.2rem .55rem;border-radius:20px;border:1px solid;}
+        .badge-blue{background:rgba(88,166,255,.1);color:var(--blue);border-color:rgba(88,166,255,.2);}
+        .badge-green{background:rgba(63,185,80,.1);color:var(--green);border-color:rgba(63,185,80,.2);}
+        .badge-purple{background:rgba(188,140,255,.1);color:var(--purple);border-color:rgba(188,140,255,.2);}
+        .page{max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem;}
+        .hero-block{padding:2.5rem;background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);margin-bottom:1.5rem;position:relative;overflow:hidden;}
+        .hero-block::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--blue),var(--purple),transparent);}
+        .project-tag{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;padding:.25rem .7rem;background:rgba(88,166,255,.1);color:var(--blue);border:1px solid rgba(88,166,255,.2);border-radius:20px;display:inline-block;margin-bottom:1.25rem;}
+        .project-title{font-size:2.2rem;font-weight:700;letter-spacing:-.03em;margin-bottom:.65rem;}
+        .project-sub{color:var(--muted);font-size:.95rem;line-height:1.65;max-width:680px;margin-bottom:1.5rem;}
+        .tag-row{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1.75rem;}
+        .chip{font-family:'JetBrains Mono',monospace;font-size:.65rem;padding:.22rem .6rem;border:1px solid var(--border);border-radius:var(--r);color:var(--dim);}
+        .btn-row{display:flex;gap:.75rem;flex-wrap:wrap;}
+        .btn{display:inline-flex;align-items:center;gap:.45rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;padding:.55rem 1.1rem;border-radius:var(--r);text-decoration:none;border:1px solid;transition:background .15s,transform .15s;cursor:pointer;}
+        .btn-primary{background:var(--blue);color:#000;border-color:var(--blue);}.btn-primary:hover{background:#73b9ff;}
+        .btn-ghost{background:transparent;color:var(--fg);border-color:var(--border);}.btn-ghost:hover{background:var(--bg2);}
+        .kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:.85rem;margin-bottom:1.5rem;}
+        .kpi{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);padding:.85rem 1rem;text-align:center;}
+        .kpi-val{font-size:1.5rem;font-weight:700;line-height:1;margin-bottom:.3rem;color:var(--blue);}
+        .kpi-lbl{font-size:.68rem;color:var(--muted);}
+        .two-col{display:grid;grid-template-columns:1.3fr 1fr;gap:1.25rem;margin-bottom:1.5rem;}
+        .card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;}
+        .card-title{font-size:.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:1.1rem;padding-bottom:.6rem;border-bottom:1px solid var(--border);}
+        .pipeline-step{display:flex;align-items:flex-start;gap:.85rem;padding:.65rem 0;border-bottom:1px solid rgba(48,54,61,.6);}
+        .pipeline-step:last-child{border-bottom:none;}
+        .step-num{width:1.75rem;height:1.75rem;border-radius:50%;background:rgba(88,166,255,.1);border:1px solid rgba(88,166,255,.25);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--blue);flex-shrink:0;margin-top:.05rem;}
+        .step-body strong{display:block;font-size:.86rem;font-weight:600;margin-bottom:.2rem;}
+        .step-body p{font-size:.8rem;color:var(--muted);line-height:1.55;}
+        .step-body code{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--green);background:rgba(63,185,80,.08);padding:.1rem .4rem;border-radius:3px;}
+        .adr-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:1.5rem;}
+        .adr{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;}
+        .adr-num{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--blue);letter-spacing:.08em;margin-bottom:.4rem;}
+        .adr h4{font-size:.9rem;font-weight:600;margin-bottom:.4rem;}
+        .adr p{font-size:.8rem;color:var(--muted);line-height:1.55;}
+        .adr .tradeoff{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--gold);margin-top:.5rem;padding:.3rem .6rem;background:rgba(210,153,34,.06);border-radius:3px;display:inline-block;}
+        .schema-block{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.8;overflow-x:auto;margin-bottom:1.5rem;}
+        .sk{color:var(--blue);}.sv{color:#c3e88d;}.sc{color:var(--dim);}
+        .three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem;margin-bottom:1.5rem;}
+        .service-card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;}
+        .service-icon{font-size:1.5rem;margin-bottom:.65rem;display:block;}
+        .service-card h4{font-size:.88rem;font-weight:600;margin-bottom:.35rem;}
+        .service-card p{font-size:.78rem;color:var(--muted);line-height:1.55;}
+        .service-card .lang{font-family:'JetBrains Mono',monospace;font-size:.65rem;padding:.18rem .5rem;border-radius:3px;margin-top:.6rem;display:inline-block;}
+        .ts-lang{background:rgba(88,166,255,.1);color:var(--blue);}
+        .py-lang{background:rgba(63,185,80,.1);color:var(--green);}
+        .infra-lang{background:rgba(188,140,255,.1);color:var(--purple);}
+        @media(max-width:768px){.kpi-row{grid-template-columns:repeat(3,1fr);}.two-col,.adr-grid,.three-col{grid-template-columns:1fr;}}
+    
+    nav{padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);}
+    .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:#00e87a;text-decoration:none;}
+    .back-link{font-size:.875rem;color:rgba(238,242,247,.5);display:flex;align-items:center;gap:.5rem;text-decoration:none;transition:color .2s;}
+    .back-link:hover{color:#00e87a;}
+    .back-link svg{width:16px;height:16px;}
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="../index.html" data-text="YA1">YA1</a>
+  <a class="back-link" href="../index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+    Back to Portfolio
+  </a>
+</nav>
+<div class="topbar">
+    <span class="tb-logo">TaskScribe</span>
+    <a class="tb-back" href="../index.html#work"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg> Back to Portfolio</a>
+    <div class="tb-right">
+        <span class="badge badge-blue">SaaS</span>
+        <span class="badge badge-green">CI Passing</span>
+        <span class="badge badge-purple">Polyglot</span>
+    </div>
+</div>
+
+<div class="page">
+
+    <div class="hero-block">
+        <span class="project-tag">AI · Automation · Full-Stack SaaS</span>
+        <div class="project-title">TaskScribe</div>
+        <p class="project-sub">AI-powered note transcription → structured task extraction → automated client delivery. A production-scale, polyglot SaaS application that eliminates the manual overhead between a contractor's meeting notes and their client's inbox.</p>
+        <div class="tag-row">
+            <span class="chip">Next.js 15</span><span class="chip">TypeScript</span><span class="chip">Python FastAPI</span><span class="chip">PostgreSQL</span><span class="chip">Prisma ORM</span><span class="chip">Redis + arq</span><span class="chip">OpenAI Whisper</span><span class="chip">Claude API</span><span class="chip">Resend</span><span class="chip">Docker Compose</span><span class="chip">GitHub Actions</span><span class="chip">S3 / MinIO</span><span class="chip">HMAC-SHA256</span><span class="chip">Zod</span><span class="chip">Pydantic</span>
+        </div>
+        <div class="btn-row">
+            <a class="btn btn-primary" href="https://github.com/ya1-oa/taskscribe" target="_blank" rel="noopener">View on GitHub →</a>
+            <a class="btn btn-ghost" href="../index.html#intake">Hire for a Build Like This</a>
+        </div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi"><div class="kpi-val">45</div><div class="kpi-lbl">Files Scaffolded</div></div>
+        <div class="kpi"><div class="kpi-val">2</div><div class="kpi-lbl">Decoupled Services</div></div>
+        <div class="kpi"><div class="kpi-val">8</div><div class="kpi-lbl">Architecture ADRs</div></div>
+        <div class="kpi"><div class="kpi-val" style="color:var(--green);">✓</div><div class="kpi-lbl">CI Passing</div></div>
+        <div class="kpi"><div class="kpi-val">7</div><div class="kpi-lbl">DB Entities</div></div>
+        <div class="kpi"><div class="kpi-val">JSON</div><div class="kpi-lbl">Structured LLM Output</div></div>
+    </div>
+
+    <div class="three-col">
+        <div class="service-card">
+            <span class="service-icon">🌐</span>
+            <h4>apps/web</h4>
+            <p>Next.js 15 App Router. System of record: owns auth (Auth.js), database (Prisma + Postgres), public API, client email delivery. The only service that writes the DB.</p>
+            <span class="lang ts-lang">TypeScript</span>
+        </div>
+        <div class="service-card">
+            <span class="service-icon">🧠</span>
+            <h4>services/ai</h4>
+            <p>Python FastAPI + arq worker. Stateless: transcribes audio via Whisper, extracts structured tasks via LLM, POSTs results back via HMAC-signed callback. No DB access.</p>
+            <span class="lang py-lang">Python 3.11</span>
+        </div>
+        <div class="service-card">
+            <span class="service-icon">🏗️</span>
+            <h4>packages/shared</h4>
+            <p>Cross-service contract: Zod schemas (TypeScript) mirrored as Pydantic models (Python). The seam between services is typed in both languages — no drifting interfaces.</p>
+            <span class="lang infra-lang">Shared Contract</span>
+        </div>
+    </div>
+
+    <div class="two-col">
+        <div class="card">
+            <div class="card-title">Async Pipeline Flow</div>
+            <div class="pipeline-step">
+                <div class="step-num">1</div>
+                <div class="step-body"><strong>Upload</strong><p>Client uploads audio. Web app stores blob to <code>S3/MinIO</code>, creates <code>Note</code> row (PENDING), enqueues job to Redis. Returns <code>202 Accepted</code> immediately — zero blocking.</p></div>
+            </div>
+            <div class="pipeline-step">
+                <div class="step-num">2</div>
+                <div class="step-body"><strong>Transcription</strong><p>arq worker dequeues. Pulls audio from object storage. Runs through <code>Transcriber</code> interface (OpenAI Whisper or faster-whisper — pluggable by config, no rewrite).</p></div>
+            </div>
+            <div class="pipeline-step">
+                <div class="step-num">3</div>
+                <div class="step-body"><strong>Structured Extraction</strong><p>LLM call with <code>JSON schema</code> constraint — model must return <code>{ title, summary, items[] }</code>. Output validated by Pydantic before accepted. Retries on malformed output.</p></div>
+            </div>
+            <div class="pipeline-step">
+                <div class="step-num">4</div>
+                <div class="step-body"><strong>HMAC Callback</strong><p>AI service POSTs result to <code>/api/internal/callback</code>. Body signed with <code>HMAC-SHA256</code>, verified in constant time. Untrusted callers get 401, result discarded.</p></div>
+            </div>
+            <div class="pipeline-step">
+                <div class="step-num">5</div>
+                <div class="step-body"><strong>Persist + Deliver</strong><p>Web app writes tasks to Postgres, marks Note COMPLETE. Sends formatted email via Resend. Generates share link for client portal access.</p></div>
+            </div>
+            <div class="pipeline-step">
+                <div class="step-num">6</div>
+                <div class="step-body"><strong>Job Audit Trail</strong><p>Every pipeline run writes a <code>Job</code> row: type, status, attempts, error, timestamps. Failures are a DB state — never a silent void.</p></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title">Database Schema (7 Entities)</div>
+            <div class="schema-block">
+<span class="sk">User</span> <span class="sc">// Clerk shadow user, FK integrity</span>
+  id · email · name · createdAt
+
+<span class="sk">Note</span> <span class="sc">// core entity</span>
+  id · userId · title · status
+  audioKey · transcript · rawLlm
+  <span class="sv">status: PENDING|PROCESSING|COMPLETE|FAILED</span>
+
+<span class="sk">Task</span> <span class="sc">// extracted action items</span>
+  id · noteId · content · priority
+  dueHint · completedAt
+
+<span class="sk">Delivery</span> <span class="sc">// email audit</span>
+  id · noteId · recipientEmail
+  provider · externalId · status
+
+<span class="sk">ShareLink</span> <span class="sc">// signed client access</span>
+  id · noteId · token · expiresAt
+  viewedAt
+
+<span class="sk">Job</span> <span class="sc">// pipeline audit trail</span>
+  id · noteId · type · status
+  attempts · error · startedAt · finishedAt
+
+<span class="sk">ApiKey</span> <span class="sc">// service-to-service auth</span>
+  id · userId · keyHash · lastUsedAt
+            </div>
+        </div>
+    </div>
+
+    <div class="card-title" style="padding:0 0 .6rem;margin-bottom:.85rem;border-bottom:1px solid var(--border);">Architecture Decision Records</div>
+    <div class="adr-grid">
+        <div class="adr">
+            <div class="adr-num">ADR-001</div>
+            <h4>Async pipeline — never inline</h4>
+            <p>Transcription takes 10–40s. Holding an HTTP request open that long would break serverless timeouts and make the UI feel broken. Upload returns 202 immediately; a Redis-backed worker does the slow work.</p>
+            <span class="tradeoff">Trade-off: operational cost of a queue + eventually-consistent status model</span>
+        </div>
+        <div class="adr">
+            <div class="adr-num">ADR-002</div>
+            <h4>Polyglot (TS web + Python AI)</h4>
+            <p>TypeScript for the product (types from DB to UI). Python for the AI pipeline (Whisper, model SDKs, audio libs). Each language where it's strongest; separate scaling and failure domains.</p>
+            <span class="tradeoff">Trade-off: two runtimes, one internal HTTP hop</span>
+        </div>
+        <div class="adr">
+            <div class="adr-num">ADR-003</div>
+            <h4>Single DB owner (web only)</h4>
+            <p>Only apps/web touches Postgres. The AI service returns results over a callback; the web app persists them. One migration owner, unambiguous schema authority, simpler auditing.</p>
+            <span class="tradeoff">Trade-off: one extra HTTP callback vs a direct DB write</span>
+        </div>
+        <div class="adr">
+            <div class="adr-num">ADR-004</div>
+            <h4>HMAC-signed internal callbacks</h4>
+            <p>The AI worker signs the request body with HMAC-SHA256. The web app verifies in constant time before trusting the payload. Internal services are never trusted blindly — not even on a private network.</p>
+            <span class="tradeoff">Trade-off: shared-secret auth vs mTLS (right level of security for V1)</span>
+        </div>
+        <div class="adr">
+            <div class="adr-num">ADR-006</div>
+            <h4>Schema-constrained LLM extraction</h4>
+            <p>Freeform prompts return unparseable prose. Instead, extraction uses JSON-schema constrained output so the model must return a typed structure. Validated by Pydantic before accepted.</p>
+            <span class="tradeoff">Trade-off: occasional retry on malformed output vs deterministic storage</span>
+        </div>
+        <div class="adr">
+            <div class="adr-num">ADR-007</div>
+            <h4>Pluggable providers behind interfaces</h4>
+            <p>Transcription and extraction providers change on price/quality. The Transcriber and Extractor interfaces let you swap Whisper for Deepgram or change LLM vendors via config — no rewrite required.</p>
+            <span class="tradeoff">Trade-off: small indirection layer up front; pays back on first vendor change</span>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

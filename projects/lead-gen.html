@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B2B Lead Generation System — Architecture | YA1 Creative</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030507;--fg:#e8edf2;--muted:#6b7a8d;--green:#00e87a;--blue:#38bdf8;--gold:#ffd580;--purple:#a78bfa;--border:rgba(255,255,255,.07);--r:10px;--display:'Syne',sans-serif;--mono:'JetBrains Mono',monospace;--body:'DM Sans',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.6;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 2rem;}
+nav{padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.logo{font-family:var(--display);font-weight:800;font-size:1.1rem;color:var(--gold);}
+.back-link{font-size:.875rem;color:var(--muted);display:flex;align-items:center;gap:.5rem;transition:color .2s;}
+.back-link:hover{color:var(--gold);}
+.back-link svg{width:16px;height:16px;}
+header{padding:4rem 0 3rem;}
+.proj-eyebrow{font-family:var(--mono);font-size:.75rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem;}
+header h1{font-family:var(--display);font-size:clamp(2rem,4vw,3.5rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:1.5rem;}
+.proj-deck{color:var(--muted);font-size:1.1rem;max-width:640px;line-height:1.7;}
+.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:1rem;margin:3rem 0;}
+.kpi{background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem 1rem;text-align:center;}
+.kpi strong{display:block;font-family:var(--display);font-size:1.4rem;font-weight:800;color:var(--gold);}
+.kpi span{font-size:.75rem;color:var(--muted);}
+section{padding:3rem 0;border-top:1px solid var(--border);}
+section h2{font-family:var(--display);font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin-bottom:1.75rem;}
+.arch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+.arch-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r);padding:2rem;}
+.arch-card h3{font-family:var(--display);font-weight:700;font-size:1rem;margin-bottom:.75rem;}
+.arch-card .path{font-family:var(--mono);font-size:.75rem;color:var(--gold);margin-bottom:1rem;}
+.arch-card p{font-size:.875rem;color:var(--muted);line-height:1.65;}
+.chip{display:inline-block;padding:.2rem .55rem;background:rgba(255,255,255,.06);border-radius:4px;font-size:.72rem;font-family:var(--mono);color:var(--muted);margin:.2rem;}
+.pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;margin-top:1.5rem;}
+.pipe-step{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;text-align:center;}
+.pipe-num{font-family:var(--mono);font-size:.7rem;color:var(--gold);margin-bottom:.5rem;}
+.pipe-step strong{display:block;font-size:.875rem;font-weight:600;margin-bottom:.4rem;}
+.pipe-step span{font-size:.75rem;color:var(--muted);}
+.problem-box{background:rgba(255,213,128,.04);border:1px solid rgba(255,213,128,.15);border-radius:var(--r);padding:2rem;margin-bottom:2rem;}
+.problem-box h3{font-family:var(--mono);font-size:.75rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;}
+.problem-box p{color:var(--muted);line-height:1.7;}
+.adr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.adr-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;}
+.adr-card .adr-num{font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-bottom:.5rem;}
+.adr-card h4{font-size:.9rem;font-weight:600;margin-bottom:.5rem;}
+.adr-card p{font-size:.8rem;color:var(--muted);line-height:1.6;}
+.stack-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem;}
+.score-table{width:100%;border-collapse:collapse;margin-top:1rem;font-size:.875rem;}
+.score-table th{text-align:left;padding:.75rem 1rem;border-bottom:1px solid var(--border);color:var(--muted);font-weight:500;font-family:var(--mono);font-size:.75rem;}
+.score-table td{padding:.75rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);color:var(--fg);}
+.score-table tr:last-child td{border-bottom:none;}
+.tag{display:inline-block;padding:.15rem .45rem;border-radius:3px;font-size:.7rem;font-family:var(--mono);}
+.tag-pass{background:rgba(0,232,122,.1);color:var(--green);}
+.tag-fail{background:rgba(255,77,109,.1);color:#ff4d6d;}
+.tag-review{background:rgba(255,213,128,.1);color:var(--gold);}
+footer{padding:3rem 0;border-top:1px solid var(--border);text-align:center;}
+footer p{font-size:.8rem;color:var(--muted);}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;border-radius:var(--r);font-size:.875rem;font-weight:600;transition:all .2s;}
+.btn-ghost{border:1px solid var(--border);color:var(--muted);}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+.cta-row{display:flex;gap:1rem;margin-top:2rem;}
+@media(max-width:900px){.arch-grid,.kpi-row,.pipeline,.adr-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.arch-grid,.kpi-row,.pipeline,.adr-grid{grid-template-columns:1fr;}}
+
+    .ui-shot{border-radius:10px;overflow:hidden;border:1px dashed rgba(255,213,128,.2);background:rgba(255,255,255,.015);min-height:140px;display:flex;align-items:center;justify-content:center;}
+    .ui-shot img{width:100%;display:block;border-radius:9px;}
+    .shot-empty{flex-direction:column;align-items:center;gap:.4rem;padding:1.5rem;text-align:center;}
+    .shot-empty span{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:rgba(255,255,255,.2);}
+    .shot-path{color:rgba(255,213,128,.35)!important;}
+</style>
+</head>
+<body>
+<nav>
+  <span class="logo">YA1</span>
+  <a class="back-link" href="../index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+    Back to Portfolio
+  </a>
+</nav>
+
+<div class="wrap">
+  <header>
+    <p class="proj-eyebrow">Automation &middot; Python &middot; B2B Pipeline</p>
+    <h1>B2B Lead Generation System</h1>
+    <p class="proj-deck">Automated B2B prospecting infrastructure — from raw domain list to scored, enriched lead in CRM with zero manual steps. Multi-source discovery, API-based enrichment, qualification scoring, and sequenced outreach running as an async Python pipeline.</p>
+    <div class="cta-row">
+      <a class="btn btn-ghost" href="../index.html">&#8592; Portfolio</a>
+    </div>
+  </header>
+
+  <div class="kpi-row">
+    <div class="kpi"><strong>Zero</strong><span>Manual Steps</span></div>
+    <div class="kpi"><strong>Multi</strong><span>Source Discovery</span></div>
+    <div class="kpi"><strong>Scored</strong><span>Qualification</span></div>
+    <div class="kpi"><strong>Async</strong><span>Pipeline</span></div>
+    <div class="kpi"><strong>Seq'd</strong><span>Outreach</span></div>
+    <div class="kpi"><strong>CRM</strong><span>Auto-Sync</span></div>
+  </div>
+
+  <section>
+    <h2>The Problem</h2>
+    <div class="problem-box">
+      <h3>Root Cause</h3>
+      <p>Sales teams burn hours per day on manual prospecting tasks that are structurally automatable: finding companies that match ICP, enriching contact data from multiple sources, scoring leads for fit, and queuing them for outreach. Each step is routine enough to have deterministic rules — but complex enough that no single off-the-shelf tool covers the full chain. The result is a broken manual handoff between tools that should be one pipeline.</p>
+    </div>
+    <p style="color:var(--muted);font-size:.9rem;">The system treats lead generation as a data pipeline problem: structured ingestion, deterministic transformation stages, scored output. Each stage is independently replaceable. The enrichment layer is pluggable — swap API providers without touching scoring or outreach logic.</p>
+  </section>
+
+  <section>
+    <h2>Pipeline Architecture</h2>
+    <div class="pipeline">
+      <div class="pipe-step"><div class="pipe-num">01</div><strong>Discovery</strong><span>Multi-source prospect ingestion — domain lists, LinkedIn Sales Nav export, niche directories</span></div>
+      <div class="pipe-step"><div class="pipe-num">02</div><strong>Enrichment</strong><span>Async API enrichment — company size, tech stack, funding, decision-maker contacts</span></div>
+      <div class="pipe-step"><div class="pipe-num">03</div><strong>Qualification</strong><span>Configurable scoring model — ICP fit, tech stack match, budget signals, engagement indicators</span></div>
+      <div class="pipe-step"><div class="pipe-num">04</div><strong>Deduplication</strong><span>Hash-based dedup against existing CRM records before insert</span></div>
+      <div class="pipe-step"><div class="pipe-num">05</div><strong>Outreach</strong><span>Sequenced email cadence — templated, personalized with enriched data fields</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Service Architecture</h2>
+    <div class="arch-grid">
+      <div class="arch-card">
+        <div class="path">pipeline/discovery</div>
+        <h3>Prospect Discovery</h3>
+        <p>Playwright-based scraping for niche directories and job boards as ICP signals. Structured parsers for CSV exports from LinkedIn Sales Navigator and Apollo. Each source produces a normalized <code style="font-size:.8rem;color:var(--gold)">ProspectRaw</code> record.</p>
+        <div class="stack-row">
+          <span class="chip">Playwright</span><span class="chip">httpx</span><span class="chip">Pydantic v2</span>
+        </div>
+      </div>
+      <div class="arch-card">
+        <div class="path">pipeline/enrichment</div>
+        <h3>Async Enrichment Layer</h3>
+        <p>Async HTTP fan-out to enrichment APIs (Clearbit / Hunter / Prospeo) with exponential backoff and per-provider rate limiting. Merges partial records from multiple providers into a single enriched contact. Missing fields degrade gracefully — don't block scoring.</p>
+        <div class="stack-row">
+          <span class="chip">asyncio</span><span class="chip">httpx</span><span class="chip">tenacity</span><span class="chip">Redis rate-limit</span>
+        </div>
+      </div>
+      <div class="arch-card">
+        <div class="path">pipeline/scoring</div>
+        <h3>Qualification Engine</h3>
+        <p>Weighted scoring model over enriched fields. Configurable ICP rules in YAML — no code change to adjust weights or add signals. Outputs a <code style="font-size:.8rem;color:var(--gold)">QualificationScore</code> with per-dimension breakdown so you can see why a lead ranked as it did.</p>
+        <div class="stack-row">
+          <span class="chip">Python</span><span class="chip">PyYAML</span><span class="chip">Pydantic v2</span><span class="chip">SQLAlchemy</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Qualification Score Breakdown</h2>
+    <p style="color:var(--muted);font-size:.875rem;margin-bottom:1rem;">Each lead exits the pipeline with a composite score and per-signal breakdown. Example output for a SaaS company in the target ICP:</p>
+    <table class="score-table">
+      <thead><tr><th>Signal</th><th>Weight</th><th>Value</th><th>Outcome</th></tr></thead>
+      <tbody>
+        <tr><td>Company size (11–200 employees)</td><td>25%</td><td>47 employees</td><td><span class="tag tag-pass">PASS</span></td></tr>
+        <tr><td>Tech stack match (Node / Python / React)</td><td>30%</td><td>3/3 match</td><td><span class="tag tag-pass">PASS</span></td></tr>
+        <tr><td>Recent funding signal</td><td>20%</td><td>Seed (18mo ago)</td><td><span class="tag tag-review">REVIEW</span></td></tr>
+        <tr><td>Decision-maker reachable</td><td>15%</td><td>CTO email verified</td><td><span class="tag tag-pass">PASS</span></td></tr>
+        <tr><td>Competitor tool usage</td><td>10%</td><td>No signal</td><td><span class="tag tag-fail">MISS</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Architectural Decisions</h2>
+    <div class="adr-grid">
+      <div class="adr-card">
+        <div class="adr-num">ADR-001</div>
+        <h4>Async Fan-out for Enrichment</h4>
+        <p>Concurrent API calls per lead vs. sequential. Enrichment is I/O-bound — asyncio + httpx cuts per-lead latency from ~4s to ~0.8s when hitting 3 providers simultaneously.</p>
+      </div>
+      <div class="adr-card">
+        <div class="adr-num">ADR-002</div>
+        <h4>YAML Scoring Rules</h4>
+        <p>Scoring weights and ICP criteria live in config, not code. Sales ops can adjust qualification rules without a deploy. Version-controlled alongside pipeline code.</p>
+      </div>
+      <div class="adr-card">
+        <div class="adr-num">ADR-003</div>
+        <h4>Graceful Enrichment Degradation</h4>
+        <p>Missing enrichment data scores that dimension as zero rather than blocking the pipeline. A lead with partial enrichment still enters scoring — incomplete data is a signal, not a failure.</p>
+      </div>
+      <div class="adr-card">
+        <div class="adr-num">ADR-004</div>
+        <h4>Redis for Rate Limiting</h4>
+        <p>Per-provider API rate limits enforced in Redis — not in application state. Survives process restarts. Prevents accidental 429s burning API credits mid-run.</p>
+      </div>
+      <div class="adr-card">
+        <div class="adr-num">ADR-005</div>
+        <h4>Pydantic v2 Throughout</h4>
+        <p>Every pipeline stage has typed I/O contracts. <code style="font-size:.78rem;color:var(--gold)">ProspectRaw</code> → <code style="font-size:.78rem;color:var(--gold)">EnrichedContact</code> → <code style="font-size:.78rem;color:var(--gold)">QualifiedLead</code>. Schema mismatches fail loudly at stage boundaries, not silently downstream.</p>
+      </div>
+      <div class="adr-card">
+        <div class="adr-num">ADR-006</div>
+        <h4>Hash-based Deduplication</h4>
+        <p>SHA-256 hash of normalized domain + email checked against existing CRM records before insert. Prevents duplicate outreach without full-table scans on every insert.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Full Stack</h2>
+    <div class="stack-row">
+      <span class="chip">Python 3.12</span><span class="chip">asyncio</span><span class="chip">httpx</span><span class="chip">Playwright</span><span class="chip">SQLAlchemy 2</span><span class="chip">Pydantic v2</span><span class="chip">Redis</span><span class="chip">tenacity</span><span class="chip">PyYAML</span><span class="chip">PostgreSQL</span><span class="chip">SendGrid</span><span class="chip">Docker</span>
+    </div>
+  </section>
+</div>
+
+  <section>
+    <h2>UI Screenshots</h2>
+    <p style="color:var(--muted);font-size:.875rem;margin-bottom:1.5rem;">Drop PNG screenshots into <code style="color:var(--gold);font-size:.82rem">images/projects/lead-gen-*.png</code> — they'll appear here automatically.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+      <!-- Screenshot 1 -->
+      <div class="ui-shot" data-src="images/projects/lead-gen-dashboard.png">
+        <img src="images/projects/lead-gen-dashboard.png" alt="Dashboard" loading="lazy"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="shot-empty" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:1.5rem;color:rgba(255,213,128,.3)"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5L5 19"/></svg>
+          <span>Dashboard</span>
+          <span class="shot-path">lead-gen-dashboard.png</span>
+        </div>
+      </div>
+      <!-- Screenshot 2 -->
+      <div class="ui-shot" data-src="images/projects/lead-gen-pipeline.png">
+        <img src="images/projects/lead-gen-pipeline.png" alt="Pipeline View" loading="lazy"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="shot-empty" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:1.5rem;color:rgba(255,213,128,.3)"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5L5 19"/></svg>
+          <span>Pipeline View</span>
+          <span class="shot-path">lead-gen-pipeline.png</span>
+        </div>
+      </div>
+      <!-- Screenshot 3 -->
+      <div class="ui-shot" data-src="images/projects/lead-gen-scoring.png">
+        <img src="images/projects/lead-gen-scoring.png" alt="Scoring Output" loading="lazy"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="shot-empty" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:1.5rem;color:rgba(255,213,128,.3)"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5L5 19"/></svg>
+          <span>Scoring Output</span>
+          <span class="shot-path">lead-gen-scoring.png</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+<footer>
+  <div class="wrap">
+    <p>Yakir Yaacov &mdash; <a href="mailto:elevate@ya1creative.com" style="color:var(--gold)">elevate@ya1creative.com</a></p>
+  </div>
+</footer>
+</body>
+</html>

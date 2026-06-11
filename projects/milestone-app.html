@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Milestone App — Architecture | YA1 Creative</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030507;--fg:#e8edf2;--muted:#6b7a8d;--green:#00e87a;--blue:#38bdf8;--gold:#ffd580;--purple:#a78bfa;--border:rgba(255,255,255,.07);--r:10px;--display:'Syne',sans-serif;--mono:'JetBrains Mono',monospace;--body:'DM Sans',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.6;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 2rem;}
+nav{padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.logo{font-family:var(--display);font-weight:800;font-size:1.1rem;color:var(--green);}
+.back-link{font-size:.875rem;color:var(--muted);display:flex;align-items:center;gap:.5rem;transition:color .2s;}
+.back-link:hover{color:var(--green);}
+.back-link svg{width:16px;height:16px;}
+header{padding:4rem 0 3rem;}
+.proj-eyebrow{font-family:var(--mono);font-size:.75rem;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem;}
+header h1{font-family:var(--display);font-size:clamp(2rem,4vw,3.5rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:1.5rem;}
+.proj-deck{color:var(--muted);font-size:1.1rem;max-width:640px;line-height:1.7;}
+.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:1rem;margin:3rem 0;}
+.kpi{background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem 1rem;text-align:center;}
+.kpi strong{display:block;font-family:var(--display);font-size:1.4rem;font-weight:800;color:var(--green);}
+.kpi span{font-size:.75rem;color:var(--muted);}
+section{padding:3rem 0;border-top:1px solid var(--border);}
+section h2{font-family:var(--display);font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin-bottom:1.75rem;}
+.arch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+.arch-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r);padding:2rem;}
+.arch-card h3{font-family:var(--display);font-weight:700;font-size:1rem;margin-bottom:.75rem;}
+.arch-card .path{font-family:var(--mono);font-size:.75rem;color:var(--green);margin-bottom:1rem;}
+.arch-card p{font-size:.875rem;color:var(--muted);line-height:1.65;}
+.chip{display:inline-block;padding:.2rem .55rem;background:rgba(255,255,255,.06);border-radius:4px;font-size:.72rem;font-family:var(--mono);color:var(--muted);margin:.2rem;}
+.pipeline{display:grid;grid-template-columns:repeat(6,1fr);gap:.75rem;margin-top:1.5rem;}
+.pipe-step{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;text-align:center;}
+.pipe-num{font-family:var(--mono);font-size:.7rem;color:var(--green);margin-bottom:.5rem;}
+.pipe-step strong{display:block;font-size:.875rem;font-weight:600;margin-bottom:.4rem;}
+.pipe-step span{font-size:.75rem;color:var(--muted);}
+.problem-box{background:rgba(0,232,122,.04);border:1px solid rgba(0,232,122,.15);border-radius:var(--r);padding:2rem;margin-bottom:2rem;}
+.problem-box h3{font-family:var(--mono);font-size:.75rem;color:var(--green);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;}
+.problem-box p{color:var(--muted);line-height:1.7;}
+.adr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.adr-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;}
+.adr-card .adr-num{font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-bottom:.5rem;}
+.adr-card h4{font-size:.9rem;font-weight:600;margin-bottom:.5rem;}
+.adr-card p{font-size:.8rem;color:var(--muted);line-height:1.6;}
+.stack-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem;}
+footer{padding:3rem 0;border-top:1px solid var(--border);text-align:center;}
+footer p{font-size:.8rem;color:var(--muted);}
+.cta-row{display:flex;gap:1rem;margin-top:2rem;}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;border-radius:var(--r);font-size:.875rem;font-weight:600;transition:all .2s;}
+.btn-primary{background:var(--green);color:#000;}
+.btn-primary:hover{background:#00c469;}
+.btn-ghost{border:1px solid var(--border);color:var(--muted);}
+.btn-ghost:hover{border-color:var(--green);color:var(--green);}
+@media(max-width:900px){.arch-grid,.kpi-row,.pipeline,.adr-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.arch-grid,.kpi-row,.pipeline,.adr-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <span class="logo">YA1</span>
+  <a class="back-link" href="../index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+    Back to Portfolio
+  </a>
+</nav>
+
+<div class="wrap">
+  <header>
+    <p class="proj-eyebrow">SaaS &middot; React Flow &middot; FastAPI &middot; Visual PM</p>
+    <h1>Milestone App</h1>
+    <p class="proj-deck">Visual project management + dynamic contract generation SaaS. Contractors define their work visually — milestone nodes on a canvas wire into a structured project graph. The system drafts contracts from that graph and automates client progress updates as milestones complete.</p>
+    <div class="cta-row">
+      <a class="btn btn-ghost" href="../index.html">&#8592; Portfolio</a>
+    </div>
+  </header>
+
+  <div class="kpi-row">
+    <div class="kpi"><strong>Visual</strong><span>Node Canvas</span></div>
+    <div class="kpi"><strong>Auto</strong><span>Contract Draft</span></div>
+    <div class="kpi"><strong>0</strong><span>Manual Reports</span></div>
+    <div class="kpi"><strong>React<br>Flow</strong><span>Graph Engine</span></div>
+    <div class="kpi"><strong>PDF</strong><span>Generation</span></div>
+    <div class="kpi"><strong>Email</strong><span>on Milestone</span></div>
+  </div>
+
+  <section>
+    <h2>The Problem</h2>
+    <div class="problem-box">
+      <h3>Root Cause</h3>
+      <p>Contractors lose scope clarity and billing disputes arise because milestones live in email threads — no shared, auditable system. Clients don't know what's done. Contractors can't enforce milestone-based billing because there's no signed source of truth. Project scope drifts because there's no visual definition.</p>
+    </div>
+    <p style="color:var(--muted);font-size:.9rem;">The solution is a canvas where contractors <em>draw</em> a project — create milestone nodes, connect dependencies, assign values — and the system generates a contract from that visual definition. As milestones are marked complete, the client gets an automated summary email. No manual paperwork. No dispute over what was agreed.</p>
+  </section>
+
+  <section>
+    <h2>Architecture</h2>
+    <div class="arch-grid">
+      <div class="arch-card">
+        <div class="path">apps/web</div>
+        <h3>React Frontend</h3>
+        <p>React Flow canvas for node-based milestone creation. Nodes include milestone name, description, deliverables, value, and dependency edges. State synced to FastAPI backend on each canvas save.</p>
+        <div class="stack-row">
+          <span class="chip">React 18</span><span class="chip">React Flow</span><span class="chip">TypeScript</span><span class="chip">Zustand</span><span class="chip">Tailwind</span>
+        </div>
+      </div>
+      <div class="arch-card">
+        <div class="path">services/api</div>
+        <h3>FastAPI Backend</h3>
+        <p>REST API managing projects, milestones, and clients. Triggers PDF generation on contract finalization. Handles milestone completion webhooks to kick outreach pipeline. SQLModel ORM over PostgreSQL.</p>
+        <div class="stack-row">
+          <span class="chip">FastAPI</span><span class="chip">SQLModel</span><span class="chip">PostgreSQL</span><span class="chip">Alembic</span><span class="chip">Pydantic v2</span>
+        </div>
+      </div>
+      <div class="arch-card">
+        <div class="path">services/docs</div>
+        <h3>Document + Outreach Engine</h3>
+        <p>ReportLab-based PDF generation from project graph data. Contract templates structured around milestone nodes. SendGrid integration sends milestone completion emails to clients with PDF progress attachment.</p>
+        <div class="stack-row">
+          <span class="chip">ReportLab</span><span class="chip">SendGrid</span><span class="chip">Jinja2</span><span class="chip">Docker</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Contract Generation Pipeline</h2>
+    <div class="pipeline">
+      <div class="pipe-step"><div class="pipe-num">01</div><strong>Canvas Save</strong><span>Node graph persisted to DB on each edit</span></div>
+      <div class="pipe-step"><div class="pipe-num">02</div><strong>Graph Validate</strong><span>Dependency edges checked for cycles + orphan nodes</span></div>
+      <div class="pipe-step"><div class="pipe-num">03</div><strong>Contract Draft</strong><span>Structured template populated from milestone data</span></div>
+      <div class="pipe-step"><div class="pipe-num">04</div><strong>PDF Render</strong><span>ReportLab renders final signed contract PDF</span></div>
+      <div class="pipe-step"><div class="pipe-num">05</div><strong>Milestone Done</strong><span>Contractor marks complete — webhook fires</span></div>
+      <div class="pipe-step"><div class="pipe-num">06</div><strong>Client Email</strong><span>Progress report + updated PDF delivered via SendGrid</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Architectural Decisions</h2>
+    <div class="adr-grid">
+      <div class="adr-card">
+        <div class="adr-num">ADR-001</div>
+        <h4>React Flow for Milestone Canvas</h4>
+        <p>Drag-and-drop node graph over form-based input. Forces contractors to define structure, not just list tasks. Dependency edges become deliverable gates.</p>
+      </div>
+      <div class="adr-card">
+        <div class="adr-num">ADR-002</div>
+        <h4>Contract from Graph — Not Template</h4>
+        <p>Contract content is derived from the node structure, not a static template. Any canvas change invalidates the current draft — contract always reflects latest scope agreement.</p>
+      </div>
+      <div class="adr-card">
+        <div class="adr-num">ADR-003</div>
+        <h4>SQLModel over raw SQLAlchemy</h4>
+        <p>Pydantic v2 models serve as both API schema and ORM models — single source of truth for milestone shape. Eliminates mapper boilerplate and schema drift.</p>
+      </div>
+      <div class="adr-card">
+        <div class="adr-num">ADR-004</div>
+        <h4>ReportLab over Headless Chrome PDF</h4>
+        <p>Programmatic PDF generation avoids headless browser overhead. ReportLab gives pixel-level layout control for contract formatting without a Chromium dependency.</p>
+      </div>
+      <div class="adr-card">
+        <div class="adr-num">ADR-005</div>
+        <h4>SendGrid for Client Outreach</h4>
+        <p>Transactional email on milestone completion — not a notification system, but a structured audit trail. Every client email includes milestone ID, timestamp, and attached PDF.</p>
+      </div>
+      <div class="adr-card">
+        <div class="adr-num">ADR-006</div>
+        <h4>FastAPI over Django</h4>
+        <p>Lightweight API surface — no admin, no ORM batteries needed beyond SQLModel. Async handlers for document generation pipeline. Pydantic v2 validation is zero-overhead at I/O boundaries.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Full Stack</h2>
+    <div class="stack-row">
+      <span class="chip">React 18</span><span class="chip">React Flow</span><span class="chip">TypeScript</span><span class="chip">Zustand</span><span class="chip">Tailwind CSS</span><span class="chip">FastAPI</span><span class="chip">SQLModel</span><span class="chip">PostgreSQL</span><span class="chip">Alembic</span><span class="chip">Pydantic v2</span><span class="chip">ReportLab</span><span class="chip">SendGrid</span><span class="chip">Jinja2</span><span class="chip">Docker</span><span class="chip">Docker Compose</span>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>Yakir Yaacov &mdash; <a href="mailto:elevate@ya1creative.com" style="color:var(--green)">elevate@ya1creative.com</a></p>
+  </div>
+</footer>
+</body>
+</html>
