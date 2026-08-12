@@ -63,7 +63,7 @@ export default function Hero() {
           className="w-full aspect-video bg-light rounded-lg mb-16 overflow-hidden"
         >
           <img
-            src="/images/hero-placeholder.jpg"
+            src="/ai/images/luxe-collective/product-photography/luxe-collective_product_ceramic-planter_v1.jpg.webp"
             alt="Yakir Oren software portfolio"
             className="w-full h-full object-cover"
           />

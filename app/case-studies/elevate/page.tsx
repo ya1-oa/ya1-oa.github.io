@@ -24,7 +24,7 @@ export default function ElevateCase() {
 
             {/* Hero Image */}
             <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden mb-12">
-              <img src="/images/elevate/elevate_coaching_professional-portrait_v1.jpg" alt="Elevate" className="w-full h-full object-cover" />
+              <img src="/ai/images/logos/elevate_logo_square_v1.jpg.webp" alt="Elevate" className="w-full h-full object-cover" />
             </div>
 
             {/* Challenge */}
