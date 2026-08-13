@@ -24,7 +24,7 @@ export default function CrownAgencyCase() {
 
             {/* Hero Image */}
             <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden mb-12">
-              <img src="/ai/images/logos/crown-agency_logo_square_v1.jpg.webp" alt="Crown Agency" className="w-full h-full object-cover" />
+              <img src="/images/crown-agency/crown-agency_ugc_festival-ready_v1.jpg" alt="Crown Agency" className="w-full h-full object-cover" />
             </div>
 
             {/* Challenge */}

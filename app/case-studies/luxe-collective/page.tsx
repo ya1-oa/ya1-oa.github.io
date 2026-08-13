@@ -24,7 +24,7 @@ export default function LuxeCollectiveCase() {
 
             {/* Hero Image */}
             <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden mb-12">
-              <img src="/ai/images/luxe-collective/product-photography/luxe-collective_product_ceramic-planter_v1.jpg.webp" alt="Luxe Collective" className="w-full h-full object-cover" />
+              <img src="/images/luxe-collective/luxe-collective_product_ceramic-planter_v1.jpg" alt="Luxe Collective" className="w-full h-full object-cover" />
             </div>
 
             {/* Challenge */}

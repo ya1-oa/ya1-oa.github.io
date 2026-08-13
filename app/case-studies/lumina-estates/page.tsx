@@ -24,7 +24,7 @@ export default function LuminaEstatesCase() {
 
             {/* Hero Image */}
             <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden mb-12">
-              <img src="/ai/images/logos/lumina-estates_logo_square_v1.jpg.webp" alt="Lumina Estates" className="w-full h-full object-cover" />
+              <img src="/images/lumina-estates/lumina-estates_staging_living-room_modern-minimalist_v1.jpg" alt="Lumina Estates" className="w-full h-full object-cover" />
             </div>
 
             {/* Challenge */}

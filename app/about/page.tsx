@@ -48,10 +48,10 @@ export default function AboutPage() {
           animate="visible"
         >
           <motion.h1 variants={itemVariants} className="font-serif text-5xl text-text mb-6">
-            About Yakir Oren
+            About Aura Studio
           </motion.h1>
           <motion.p variants={itemVariants} className="text-lg text-text/60 leading-relaxed">
-            I build production software, AI-assisted operations, and polished TypeScript products around real business workflows.
+            We are a LA-based creative boutique specializing in production AI systems for ambitious brands.
           </motion.p>
         </motion.div>
 
@@ -63,8 +63,8 @@ export default function AboutPage() {
           className="w-full aspect-video bg-light rounded-lg overflow-hidden mb-16"
         >
           <img
-            src="/ai/images/luxe-collective/product-photography/luxe-collective_product_ceramic-planter_v1.jpg.webp"
-            alt="Selected product work"
+            src="/images/gallery/gallery-abstract-01.jpg"
+            alt="Aura Studio"
             className="w-full h-full object-cover"
           />
         </motion.div>
@@ -157,10 +157,10 @@ export default function AboutPage() {
             viewport={{ once: true }}
           >
             {[
-              '/ai/images/logos/crown-agency_logo_square_v1.jpg.webp',
-              '/ai/images/logos/elevate_logo_square_v1.jpg.webp',
-              '/ai/images/logos/lumina-estates_logo_square_v1.jpg.webp',
-              '/ai/images/logos/luxe-collective_logo_square_v1.jpg.webp',
+              'gallery-abstract-02',
+              'gallery-abstract-03',
+              'gallery-abstract-04',
+              'gallery-abstract-05',
             ].map((image, idx) => (
               <motion.div
                 key={idx}
@@ -170,7 +170,7 @@ export default function AboutPage() {
                 transition={{ duration: 0.3 }}
               >
                 <img
-                  src={image}
+                  src={`/images/gallery/${image}.jpg`}
                   alt={`Gallery ${idx + 1}`}
                   className="w-full h-full object-cover"
                 />
