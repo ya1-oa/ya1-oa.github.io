@@ -81,11 +81,11 @@
         @keyframes tFade{from{opacity:0;transform:translateY(2px);}to{opacity:1;transform:none;}}
         .t-input-row{display:flex;align-items:center;gap:0;padding:.8rem 2rem 1.1rem;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0;}
         .t-input-display{color:var(--green);font-family:var(--mono);font-size:.875rem;white-space:pre;min-width:2px;}
-        .t-real-input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;}
+        .t-real-input{position:absolute;left:0;right:0;bottom:0;opacity:0;width:100%;height:3.6rem;cursor:text;}
         .t-cursor-live{display:inline-block;width:.52rem;height:1em;background:var(--green);vertical-align:text-bottom;animation:blink 1s step-end infinite;margin-left:1px;}
         .t-hint{font-family:var(--mono);font-size:.72rem;color:rgba(238,242,247,.22);padding:0 2rem .65rem;flex-shrink:0;}
         /* Command palette */
-        .t-palette{position:absolute;bottom:100%;left:0;right:0;margin-bottom:.25rem;background:#0d1520;border:1px solid rgba(0,232,122,.25);border-radius:.55rem;overflow:hidden;z-index:50;box-shadow:0 8px 32px rgba(0,0,0,.6);display:none;}
+        .t-palette{position:absolute;bottom:3.9rem;left:1rem;right:1rem;margin-bottom:.25rem;background:#0d1520;border:1px solid rgba(0,232,122,.25);border-radius:.55rem;overflow:hidden;z-index:50;box-shadow:0 8px 32px rgba(0,0,0,.6);display:none;max-height:min(330px,55vh);overflow-y:auto;}
         .t-palette.open{display:block;}
         .t-pal-header{font-family:var(--mono);font-size:.66rem;color:var(--dim);padding:.5rem .85rem .35rem;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.05);}
         .t-cmd{display:flex;justify-content:space-between;align-items:center;padding:.6rem 1rem;font-family:var(--mono);font-size:.82rem;color:var(--green);cursor:pointer;transition:background .12s;}
@@ -424,6 +424,7 @@
                     <div class="t-pal-header">Available commands</div>
                     <div class="t-cmd" data-cmd="/help">/help <span>&mdash; list all commands</span></div>
                     <div class="t-cmd" data-cmd="/projects">/projects <span>&mdash; all projects</span></div>
+                    <div class="t-cmd" data-cmd="/writing">/writing <span>&mdash; engineering notes</span></div>
                     <div class="t-cmd" data-cmd="/stack">/stack <span>&mdash; full tech stack</span></div>
                     <div class="t-cmd" data-cmd="/background">/background <span>&mdash; about &amp; approach</span></div>
                     <div class="t-cmd" data-cmd="/work-experience">/work-experience <span>&mdash; career timeline</span></div>
@@ -1363,6 +1364,7 @@ if (intakeForm) {
     '/help': () => [
       '<span class="tco">Available commands:</span>',
       '<span style="color:var(--green)">/projects</span>        <span class="tco">— all proof-of-work projects</span>',
+      '<span style="color:var(--green)">/writing</span>         <span class="tco">— engineering notes</span>',
       '<span style="color:var(--green)">/stack</span>           <span class="tco">— full tech stack</span>',
       '<span style="color:var(--green)">/background</span>      <span class="tco">— about &amp; engineering approach</span>',
       '<span style="color:var(--green)">/work-experience</span> <span class="tco">— career timeline 2016–2026</span>',
@@ -1371,8 +1373,8 @@ if (intakeForm) {
       '<span style="color:var(--green)">/clear</span>           <span class="tco">— clear terminal</span>',
     ],
     '/projects': () => [
-      '<span class="tco">── 14 Production Projects ──</span>',
-      '<span style="color:var(--green)">01</span> <span class="tc">ClaiMetApp</span>          <span class="tco">Django 4.2 &middot; Celery &middot; Claude Vision &middot; <a href="projects/claimetapp.html" style="color:var(--blue)">deep-dive →</a></span>',
+      '<span class="tco">── Selected Production Systems &amp; Product Demos ──</span>',
+      '<span style="color:var(--green)">01</span> <span class="tc">Claimet App</span>          <span class="tco">Django 4.2 &middot; Celery &middot; Claude Vision &middot; <a href="projects/claimetapp.html" style="color:var(--blue)">deep-dive →</a></span>',
       '<span style="color:var(--green)">02</span> <span class="tc">TaskScribe</span>          <span class="tco">Next.js 15 &middot; FastAPI &middot; Redis &middot; <a href="projects/taskscribe.html" style="color:var(--blue)">deep-dive →</a></span>',
       '<span style="color:var(--green)">03</span> <span class="tc">Milestone App</span>       <span class="tco">React Flow &middot; FastAPI &middot; ReportLab &middot; <a href="projects/milestone-app.html" style="color:var(--blue)">deep-dive →</a></span>',
       '<span style="color:var(--green)">04</span> <span class="tc">Lead Gen System</span>     <span class="tco">Python async &middot; Playwright &middot; <a href="projects/lead-gen.html" style="color:var(--blue)">deep-dive →</a></span>',
@@ -1386,7 +1388,17 @@ if (intakeForm) {
       '<span style="color:var(--green)">12</span> <span class="tc">Latitude CRM</span>        <span class="tco">Unified pipeline &middot; Revenue forecasting</span>',
       '<span style="color:var(--green)">13</span> <span class="tc">MenuLoop</span>            <span class="tco">QR menus &middot; Loyalty &middot; Hospitality</span>',
       '<span style="color:var(--green)">14</span> <span class="tc">PulseFrame</span>          <span class="tco">WebGL &middot; Motion &middot; Brand launches</span>',
-      '<span class="tco">→ <a href="#work" style="color:var(--blue)">Scroll to Proof of Work</a> for full cards</span>',
+      '<span style="color:var(--green)">15</span> <span class="tc">ContractFlow</span>         <span class="tco">TypeScript &middot; Contract workflow &middot; Live demo</span>',
+      '<span style="color:var(--green)">16</span> <span class="tc">LaNatureal</span>           <span class="tco">Hydrogen &middot; Commerce &middot; Live storefront</span>',
+      '<span style="color:var(--green)">17</span> <span class="tc">Delivery Intelligence</span> <span class="tco">TypeScript &middot; Driver operations &middot; Live demo</span>',
+      '<span class="tco">→ <a href="#work" style="color:var(--blue)">Scroll to Projects</a> for full cards</span>',
+    ],
+    '/writing': () => [
+      '<span class="tco">Engineering Notes</span>',
+      '<span class="tc">Building Vision Audits That Can Explain Their Work</span>',
+      '<span class="tc">Token Budgets Are an Architecture Decision</span>',
+      '<span class="tc">Documents Are Data Products</span>',
+      '<span class="tco"><a href="writing/index.html" style="color:var(--blue)">Open all engineering notes &rarr;</a></span>',
     ],
     '/stack': () => [
       '<span class="tco">── Backend ──</span>',
