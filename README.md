@@ -2,9 +2,9 @@
 
 This repository contains my engineering portfolio, built with static HTML, CSS, and JavaScript. It covers production application work, client projects, independent software, and engineering writing.
 
-- [Portfolio](https://ya1-oa.github.io/)
-- [Work archive](https://ya1-oa.github.io/archive.html)
-- [Résumé](https://ya1-oa.github.io/Yakir-Yaacov-Resume.pdf)
+- [Work archive](archive.html)
+- [Résumé PDF](Yakir-Yaacov-Resume.pdf)
+- [Selah case study](selah.html)
 - [Courier Radar source](https://github.com/ya1-oa/courier-radar)
 - [Aesthetify source](https://github.com/ya1-oa/aesthetify)
 
